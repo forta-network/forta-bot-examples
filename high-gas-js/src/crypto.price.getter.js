@@ -2,7 +2,7 @@ const axios = require("axios");
 
 const API_URL =
   "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
-const API_KEY = "63f81153-0530-4b2b-a1e9-03223915fd06";
+const API_KEY = "YOUR_COINMARKETCAP_API_KEY";
 const FIVE_MINS_IN_MS = 1000 * 60 * 5;
 
 // fetches USD price of wei using CoinMarketCap API
