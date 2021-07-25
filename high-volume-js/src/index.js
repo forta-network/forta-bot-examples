@@ -22,7 +22,7 @@ const handleTransaction = async (txEvent) => {
   findings.push(
     Finding.fromObject({
       name: "High Transaction Volume",
-      description: `High tranasction volume (${count}) from ${from}`,
+      description: `High transaction volume (${count}) from ${from}`,
       alertId: "FORTA-4",
       type: FindingType.Suspicious,
       severity: getSeverity(count),
