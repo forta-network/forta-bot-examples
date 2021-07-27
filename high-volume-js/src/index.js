@@ -12,7 +12,7 @@ const txCounter = new TransactionCounter(TIME_INTERVAL_MINS);
 const handleTransaction = async (txEvent) => {
   const findings = [];
   const { from, hash: txHash } = txEvent.transaction;
-  const { timestamp: blockTimestamp } = txEvent.block;
+  const blockTimestamp = txEvent.timestamp;
 
   // increment count for the from address
   const count = txCounter.increment(from, txHash, blockTimestamp);

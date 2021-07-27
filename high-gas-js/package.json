@@ -11,7 +11,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "bignumber.js": "^9.0.1",
-    "forta-agent": "^0.0.2"
+    "forta-agent": "^0.0.3"
   },
   "devDependencies": {
     "jest": "^27.0.6",

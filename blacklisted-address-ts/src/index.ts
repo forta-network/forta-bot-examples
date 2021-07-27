@@ -15,8 +15,8 @@ const BLACKLIST: { [address: string] : boolean } = {
 // report finding if any addresses involved in transaction are blacklisted
 const handleTransaction: HandleTransaction = async (txEvent: TransactionEvent) => {
   const findings: Finding[] = []
-  const blacklistedAddress = Object.keys(txEvent.addresses).find(address => BLACKLIST[address])
 
+  const blacklistedAddress = Object.keys(txEvent.addresses).find(address => BLACKLIST[address])
   if (!blacklistedAddress) return findings
 
   findings.push(

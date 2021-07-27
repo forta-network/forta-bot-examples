@@ -2,7 +2,7 @@
   // "agentId": "",                         /* Unique agent identifier e.g. my-new-agent */
   // "poolId": "agent-devnet",              /* Pool identifier of target pool to deploy agent */
   // "version": "0.0.1",                    /* Agent version */
-  "jsonRpcUrl": "wss://mainnet.infura.io/ws/v3/87d9fafcc19b46819295fa833ac8977c",                      /* JSON-RPC url for running agent during development e.g. wss://mainnet.infura.io/ws/v3/YOUR_API_KEY */
+  // "jsonRpcUrl": "",                      /* JSON-RPC url for running agent during development e.g. wss://mainnet.infura.io/ws/v3/YOUR_API_KEY */
   // "imageRepositoryUrl": "",              /* Container image repository for publishing agent images */
   // "agentRegistryContractAddress": "",    /* Contract address for agent registry */
   // "agentRegistryJsonRpcUrl": "",         /* JSON-RPC url of the network hosting agent registry contract */

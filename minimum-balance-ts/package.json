@@ -1,7 +1,7 @@
 {
-  "name": "forta-agent-starter",
+  "name": "minimum-balance-agent",
   "version": "0.0.1",
-  "description": "Forta Agent Typescript starter project",
+  "description": "Forta Agent that reports whether an account has fallen below some balance",
   "scripts": {
     "build": "tsc",
     "start": "npm run start:dev",
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "bignumber.js": "^9.0.1",
-    "forta-agent": "^0.0.2",
+    "forta-agent": "^0.0.3",
     "web3": "^1.4.0"
   },
   "devDependencies": {
