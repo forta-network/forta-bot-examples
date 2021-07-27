@@ -8,6 +8,7 @@ const CRITICAL_FEE_THRESHOLD = "1000";
 
 const cryptoPriceGetter = new CryptoPriceGetter();
 
+// report finding if transaction gas fee in USD is higher than threshold
 const handleTransaction = async (txEvent) => {
   const findings = [];
   const gasUsed = new BigNumber(txEvent.gasUsed);

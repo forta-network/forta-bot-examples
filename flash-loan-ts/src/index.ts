@@ -18,6 +18,7 @@ const JSON_RPC_URL = process.env.JSON_RPC_HOST ?
   `https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID`
 const web3 = new Web3(JSON_RPC_URL)
 
+// report finding if detected a flash loan attack on Yearn Dai vault
 const handleTransaction: HandleTransaction = async (txEvent: TransactionEvent) => {
   const findings: Finding[] = []
   
