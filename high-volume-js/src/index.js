@@ -8,32 +8,34 @@ const CRITICAL_VOLUME_THRESHOLD = 50;
 
 const txCounter = new TransactionCounter(TIME_INTERVAL_MINS);
 
-// report finding if transaction sender has high volume of transactions over specified time period
-const handleTransaction = async (txEvent) => {
-  const findings = [];
-  const { from, hash: txHash } = txEvent.transaction;
-  const blockTimestamp = txEvent.timestamp;
+function provideHandleTransaction(txCounter) {
+  return async function handleTransaction(txEvent) {
+    // report finding if transaction sender has high volume of transactions over specified time period
+    const findings = [];
+    const { from, hash: txHash } = txEvent.transaction;
+    const blockTimestamp = txEvent.timestamp;
 
-  // increment count for the from address
-  const count = txCounter.increment(from, txHash, blockTimestamp);
+    // increment count for the from address
+    const count = txCounter.increment(from, txHash, blockTimestamp);
 
-  if (count < MEDIUM_VOLUME_THRESHOLD) return findings;
+    if (count < MEDIUM_VOLUME_THRESHOLD) return findings;
 
-  findings.push(
-    Finding.fromObject({
-      name: "High Transaction Volume",
-      description: `High transaction volume (${count}) from ${from}`,
-      alertId: "FORTA-4",
-      type: FindingType.Suspicious,
-      severity: getSeverity(count),
-      metadata: {
-        from,
-        transactions: JSON.stringify(txCounter.getTransactions(from)),
-      },
-    })
-  );
-  return findings;
-};
+    findings.push(
+      Finding.fromObject({
+        name: "High Transaction Volume",
+        description: `High transaction volume (${count}) from ${from}`,
+        alertId: "FORTA-4",
+        type: FindingType.Suspicious,
+        severity: getSeverity(count),
+        metadata: {
+          from,
+          transactions: JSON.stringify(txCounter.getTransactions(from)),
+        },
+      })
+    );
+    return findings;
+  };
+}
 
 const getSeverity = (txCount) => {
   return txCount > CRITICAL_VOLUME_THRESHOLD
@@ -44,5 +46,6 @@ const getSeverity = (txCount) => {
 };
 
 module.exports = {
-  handleTransaction,
+  provideHandleTransaction,
+  handleTransaction: provideHandleTransaction(txCounter),
 };
