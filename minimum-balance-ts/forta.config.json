@@ -4,6 +4,8 @@
   "jsonRpcUrl": "http://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID",                      /* JSON-RPC url for running agent during development e.g. wss://mainnet.infura.io/ws/v3/YOUR_API_KEY */
   // "traceRpcUrl": "",                     /* JSON-RPC url for retrieving trace data during development */
   // "imageRepositoryUrl": "",              /* Container image repository for publishing agent images */
+  // "imageRepositoryUsername": "",         /* Image repository username for authentication, if required */
+  // "imageRepositoryPassword": "",         /* Image repository password for authentication, if required */
   // "agentRegistryContractAddress": "",    /* Contract address for agent registry */
   // "agentRegistryJsonRpcUrl": "",         /* JSON-RPC url of the network hosting agent registry contract */
   // "ipfsGatewayUrl": "",                  /* IPFS gateway API for publishing agent manifest e.g. https://ipfs.infura.io:5001 */

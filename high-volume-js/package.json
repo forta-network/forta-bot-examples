@@ -9,7 +9,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "forta-agent": "^0.0.6"
+    "forta-agent": "^0.0.7"
   },
   "devDependencies": {
     "jest": "^27.0.6",
