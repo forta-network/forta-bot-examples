@@ -1,0 +1,4 @@
+node_modules
+dist
+forta.config.json
+__pycache__
