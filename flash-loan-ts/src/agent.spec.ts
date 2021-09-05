@@ -1,13 +1,11 @@
 import { 
-  EventType,
   Finding,
   FindingSeverity,
   FindingType,
   HandleTransaction,
-  Network,
-  TransactionEvent 
+  createTransactionEvent
 } from "forta-agent"
-import agent from "."
+import agent from "./agent"
 
 describe("flash loan agent", () => {
   let handleTransaction: HandleTransaction;
@@ -16,13 +14,13 @@ describe("flash loan agent", () => {
       getBalance: jest.fn()
     }
   } as any
-  const createTxEvent = ({ gasUsed, addresses, logs, blockNumber }: any) => {
-    const tx = { } as any
-    const receipt = { gasUsed, logs } as any
-    const block = { number: blockNumber } as any
-    const addressez = { ...addresses } as any
-    return new TransactionEvent(EventType.BLOCK, Network.MAINNET, tx, receipt, [], addressez, block)
-  };
+
+  const createTxEvent = ({ gasUsed, addresses, logs, blockNumber }: any) => createTransactionEvent({
+    transaction: {} as any,
+    receipt: { gasUsed, logs } as any,
+    block: { number: blockNumber } as any,
+    addresses
+  })
 
   beforeAll(() => {
     handleTransaction = agent.provideHandleTransaction(mockWeb3)
