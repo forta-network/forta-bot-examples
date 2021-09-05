@@ -1,6 +1,7 @@
 {
   // "agentId": "",                         /* Unique agent identifier e.g. my-new-agent */
   // "version": "0.0.1",                    /* Agent version */
+  "documentation": "README.md"
   // "jsonRpcUrl": "",                      /* JSON-RPC url for running agent during development e.g. wss://mainnet.infura.io/ws/v3/YOUR_API_KEY */
   // "traceRpcUrl": "",                     /* JSON-RPC url for retrieving trace data during development */
   // "imageRepositoryUrl": "",              /* Container image repository for publishing agent images */
@@ -10,6 +11,5 @@
   // "agentRegistryJsonRpcUrl": "",         /* JSON-RPC url of the network hosting agent registry contract */
   // "ipfsGatewayUrl": "",                  /* IPFS gateway API for publishing agent manifest e.g. https://ipfs.infura.io:5001 */
   // "ipfsGatewayAuth": "",                 /* Authorization header, if IPFS gateway requires it */
-  "handlers": ["./dist"]                        /* Paths to agent handlers */
   // "debug": true                          /* Debug flag for additional console logging */
 }

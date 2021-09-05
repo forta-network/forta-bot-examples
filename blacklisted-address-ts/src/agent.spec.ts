@@ -1,23 +1,21 @@
 import { 
-  EventType,
   Finding,
   FindingSeverity,
   FindingType,
   HandleTransaction,
-  Network,
-  TransactionEvent 
+  createTransactionEvent
 } from "forta-agent"
-import agent from "."
+import agent from "./agent"
 
 describe("blacklisted address agent", () => {
   let handleTransaction: HandleTransaction;
-  const createTxEvent = ({ addresses }: any) => {
-    const tx = { } as any
-    const receipt = { } as any
-    const block = {} as any
-    const addressez = { ...addresses } as any
-    return new TransactionEvent(EventType.BLOCK, Network.MAINNET, tx, receipt, [], addressez, block)
-  };
+
+  const createTxEventWithAddresses = (addresses: {[addr: string]: boolean}) => createTransactionEvent({
+    transaction: {} as any,
+    receipt: {} as any,
+    block: {} as any,
+    addresses
+  })
 
   beforeAll(() => {
     handleTransaction = agent.handleTransaction
@@ -25,7 +23,7 @@ describe("blacklisted address agent", () => {
 
   describe("handleTransaction", () => {
     it("returns empty findings if no blacklisted address is involved", async () => {
-      const txEvent = createTxEvent({ addresses: {} })
+      const txEvent = createTxEventWithAddresses({})
 
       const findings = await handleTransaction(txEvent)
 
@@ -34,7 +32,7 @@ describe("blacklisted address agent", () => {
 
     it("returns a finding if a blacklisted address is involved", async () => {
       const address = "0x02788b3452849601e63ca70ce7db72c30c3cfd18";
-      const txEvent = createTxEvent({ addresses: { [address]: true }})
+      const txEvent = createTxEventWithAddresses({ [address]: true })
 
       const findings = await handleTransaction(txEvent)
 
