@@ -10,7 +10,8 @@ w3 = Web3(Web3.HTTPProvider(get_json_rpc_url()))
 def handle_block(block_event):
     findings = []
 
-    balance = int(w3.eth.get_balance(Web3.toChecksumAddress(ACCOUNT)))
+    balance = int(w3.eth.get_balance(
+        Web3.toChecksumAddress(ACCOUNT), int(block_event.block_number)))
     if (balance >= MIN_BALANCE):
         return findings
 
