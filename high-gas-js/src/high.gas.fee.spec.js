@@ -1,9 +1,9 @@
-const { default: BigNumber } = require("bignumber.js");
+const BigNumber = require("bignumber.js");
 const {
-  TransactionEvent,
   FindingType,
   FindingSeverity,
   Finding,
+  createTransactionEvent,
 } = require("forta-agent");
 const { provideHandleTransaction } = require("./high.gas.fee");
 
@@ -12,15 +12,12 @@ describe("high gas fee agent", () => {
   const mockCryptoPriceGetter = {
     getWeiPriceUsd: jest.fn(),
   };
-  const createTxEvent = ({ gasUsed, gasPrice }) => {
-    const tx = {
-      gasPrice,
-    };
-    const receipt = {
-      gasUsed,
-    };
-    return new TransactionEvent(null, null, tx, receipt, [], {}, null);
-  };
+
+  const createTxEvent = ({ gasUsed, gasPrice }) =>
+    createTransactionEvent({
+      transaction: { gasPrice },
+      receipt: { gasUsed },
+    });
 
   beforeAll(() => {
     handleTransaction = provideHandleTransaction(mockCryptoPriceGetter);
