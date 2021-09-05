@@ -7,11 +7,16 @@
     "start": "npm run start:dev",
     "start:dev": "nodemon --watch src --watch forta.config.json -e js,ts,json  --exec 'npm run build && forta-agent run'",
     "start:prod": "forta-agent run --prod",
+    "tx": "forta-agent run --tx",
+    "block": "forta-agent run --block",
+    "range": "forta-agent run --range",
+    "file": "forta-agent run --file",
+    "publish": "forta-agent publish",
     "test": "jest"
   },
   "dependencies": {
     "bignumber.js": "^9.0.1",
-    "forta-agent": "^0.0.7",
+    "forta-agent": "^0.0.13",
     "web3": "^1.4.0"
   },
   "devDependencies": {
