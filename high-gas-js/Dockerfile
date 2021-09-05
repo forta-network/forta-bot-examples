@@ -13,6 +13,5 @@ WORKDIR /app
 # COPY --from=builder /app/dist ./
 COPY ./src ./src
 COPY package*.json ./
-COPY forta.config.json ./
 RUN npm ci --production
 CMD [ "npm", "run", "start:prod" ]
