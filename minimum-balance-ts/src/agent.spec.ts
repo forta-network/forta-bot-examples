@@ -1,5 +1,5 @@
-import { BlockEvent, EventType, Finding, FindingSeverity, FindingType, HandleBlock, Network } from "forta-agent"
-import agent, { ACCOUNT, MIN_BALANCE } from "."
+import { Finding, FindingSeverity, FindingType, HandleBlock, createBlockEvent } from "forta-agent"
+import agent, { ACCOUNT, MIN_BALANCE } from "./agent"
 
 describe("minimum balance agent", () => {
   let handleBlock: HandleBlock;
@@ -9,20 +9,24 @@ describe("minimum balance agent", () => {
     }
   } as any
 
+  const blockEvent = createBlockEvent({
+    blockHash: "0xa",
+    blockNumber: 1,
+    block: {} as any
+  })
+
   beforeAll(() => {
     handleBlock = agent.provideHandleBlock(mockWeb3)
   })
 
   describe("handleBlock", () => {
-    const blockEvent = new BlockEvent(EventType.BLOCK, Network.MAINNET, "0xa", 1)
-
     it("returns empty findings if balance is above threshold", async () => {
       mockWeb3.eth.getBalance.mockReturnValueOnce("500000000000000001")
 
       const findings = await handleBlock(blockEvent)
 
       expect(mockWeb3.eth.getBalance).toHaveBeenCalledTimes(1)
-      expect(mockWeb3.eth.getBalance).toHaveBeenCalledWith(ACCOUNT)
+      expect(mockWeb3.eth.getBalance).toHaveBeenCalledWith(ACCOUNT, blockEvent.blockNumber)
       expect(findings).toStrictEqual([])
     })
 
@@ -34,7 +38,7 @@ describe("minimum balance agent", () => {
       const findings = await handleBlock(blockEvent)
 
       expect(mockWeb3.eth.getBalance).toHaveBeenCalledTimes(1)
-      expect(mockWeb3.eth.getBalance).toHaveBeenCalledWith(ACCOUNT)
+      expect(mockWeb3.eth.getBalance).toHaveBeenCalledWith(ACCOUNT, blockEvent.blockNumber)
       expect(findings).toStrictEqual([
         Finding.fromObject({
           name: "Minimum Account Balance",

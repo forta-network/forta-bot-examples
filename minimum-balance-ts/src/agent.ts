@@ -19,7 +19,7 @@ function provideHandleBlock(web3: Web3): HandleBlock {
     // report finding if specified account balance falls below threshold
     const findings: Finding[] = []
 
-    const accountBalance = new BigNumber(await web3.eth.getBalance(ACCOUNT))
+    const accountBalance = new BigNumber(await web3.eth.getBalance(ACCOUNT, blockEvent.blockNumber))
     if (accountBalance.isGreaterThanOrEqualTo(MIN_BALANCE)) return findings
 
     findings.push(
