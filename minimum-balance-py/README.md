@@ -12,7 +12,7 @@ This agent detects when a specified account balance is below 0.5 ETH
 
 - FORTA-6
   - Fired when a specified account balance is below 0.5 ETH
-  - Severity is awlays set to "info"
+  - Severity is always set to "info"
   - Type is always set to "suspicious"
   - Metadata "balance" field contains amount of wei in account
 
