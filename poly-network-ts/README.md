@@ -2,7 +2,7 @@
 
 ## Description
 
-This agent detects when the Poly Network bookkeeper changes, or when a Poly asset balance drops by more than 50%
+This agent detects when the Poly Network bookkeeper changes, or when a Poly asset balance drops by more than 50%. Also see explainer video: https://www.youtube.com/watch?v=fbqn84WFYEA
 
 ## Supported Chains
 
