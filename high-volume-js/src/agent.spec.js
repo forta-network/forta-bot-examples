@@ -1,10 +1,10 @@
 const {
-  TransactionEvent,
   FindingType,
   FindingSeverity,
   Finding,
+  createTransactionEvent,
 } = require("forta-agent");
-const { provideHandleTransaction } = require(".");
+const { provideHandleTransaction } = require("./agent");
 
 describe("high volume agent", () => {
   let handleTransaction;
@@ -12,16 +12,12 @@ describe("high volume agent", () => {
     increment: jest.fn(),
     getTransactions: jest.fn(),
   };
-  const createTxEvent = ({ from, hash, timestamp }) => {
-    const tx = {
-      from,
-      hash,
-    };
-    const block = {
-      timestamp,
-    };
-    return new TransactionEvent(null, null, tx, null, [], {}, block);
-  };
+
+  const createTxEvent = ({ from, hash, timestamp }) =>
+    createTransactionEvent({
+      transaction: { from, hash },
+      block: { timestamp },
+    });
 
   beforeAll(() => {
     handleTransaction = provideHandleTransaction(mockTxCounter);
