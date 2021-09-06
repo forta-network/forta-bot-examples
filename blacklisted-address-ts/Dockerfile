@@ -9,7 +9,7 @@ RUN npm run build
 FROM node:14.15.5-alpine
 ENV NODE_ENV=production
 WORKDIR /app
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/dist ./src
 COPY package*.json ./
 RUN npm ci --production
 CMD [ "npm", "run", "start:prod" ]
