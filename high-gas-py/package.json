@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Forta Agent Python starter project",
   "scripts": {
-    "postinstall": "python3 -m pip install -r requirements.txt",
+    "postinstall": "python3 -m pip install -r requirements_dev.txt",
     "start": "npm run start:dev",
     "start:dev": "nodemon --watch src --watch forta.config.json -e py --exec 'forta-agent run'",
     "start:prod": "forta-agent run --prod",
@@ -11,7 +11,8 @@
     "block": "forta-agent run --block",
     "range": "forta-agent run --range",
     "file": "forta-agent run --file",
-    "publish": "forta-agent publish"
+    "publish": "forta-agent publish",
+    "test": "python3 -m pytest"
   },
   "dependencies": {
     "forta-agent": "^0.0.13"
