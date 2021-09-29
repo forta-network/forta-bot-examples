@@ -6,7 +6,7 @@ const {
 } = require("forta-agent");
 const { handleTransaction } = require("./high.gas.used");
 
-describe("high gas agent", () => {
+describe("high gas used agent", () => {
   const createTxEventWithGasUsed = ({ gasUsed }) =>
     createTransactionEvent({
       receipt: { gasUsed },
