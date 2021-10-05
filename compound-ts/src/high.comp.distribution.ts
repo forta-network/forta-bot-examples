@@ -15,7 +15,7 @@ async function handleTransaction(txEvent: TransactionEvent) {
 
   // if no events found for distributing COMP, return
   const compDistributedEvents = txEvent.filterEvent(DISTRIBUTED_SUPPLIER_COMP_EVENT_SIG, COMPOUND_COMPTROLLER_ADDRESS)
-  compDistributedEvents.concat(txEvent.filterEvent(DISTRIBUTED_BORROWER_COMP_EVENT_SIG, COMPOUND_COMPTROLLER_ADDRESS))
+                                .concat(txEvent.filterEvent(DISTRIBUTED_BORROWER_COMP_EVENT_SIG, COMPOUND_COMPTROLLER_ADDRESS))
   if (!compDistributedEvents.length) return findings
 
   // determine how much COMP distributed using Transfer event
