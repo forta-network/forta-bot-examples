@@ -5,10 +5,10 @@ import { COMPOUND_TOKEN_ADDRESS, COMPOUND_RESERVOIR_ADDRESS, DRIP_METHOD_ID, ERC
 async function handleTransaction(txEvent: TransactionEvent) {
   const findings: Finding[] = []
 
-  // if not calling compoung reservoir, return
+  // if not calling compound reservoir, return
   if (txEvent.to !== COMPOUND_RESERVOIR_ADDRESS) return findings
 
-  // if not calling drop() method, return
+  // if not calling drip() method, return
   if (txEvent.transaction.data !== DRIP_METHOD_ID) return findings
 
   // determine how much COMP dripped using Transfer event
