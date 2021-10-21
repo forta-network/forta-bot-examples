@@ -1,0 +1,30 @@
+{
+  "name": "forta-agent-starter",
+  "version": "0.0.1",
+  "description": "Forta Agent Javascript starter project",
+  "scripts": {
+    "start": "npm run start:dev",
+    "start:dev": "nodemon --watch src --watch forta.config.json -e js,json --exec \"forta-agent run\"",
+    "start:prod": "forta-agent run --prod",
+    "tx": "forta-agent run --tx",
+    "block": "forta-agent run --block",
+    "range": "forta-agent run --range",
+    "file": "forta-agent run --file",
+    "publish": "forta-agent publish",
+    "disable": "forta-agent disable",
+    "enable": "forta-agent enable",
+    "keyfile": "forta-agent keyfile",
+    "test": "jest",
+    "keygen": "node generate.rsa.keys.js",
+    "obfuscate": "javascript-obfuscator ./src --output ./obfuscated --split-strings true --split-strings-chunk-length 3"
+  },
+  "dependencies": {
+    "bignumber.js": "^9.0.1",
+    "forta-agent": "^0.0.24"
+  },
+  "devDependencies": {
+    "jest": "^27.0.6",
+    "nodemon": "^2.0.8",
+    "javascript-obfuscator": "^3.0.0"
+  }
+}
