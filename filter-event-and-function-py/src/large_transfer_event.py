@@ -1,7 +1,6 @@
 from forta_agent import Finding, FindingType, FindingSeverity
+from .constants import USDT_ADDRESS, USDT_DECIMALS
 
-USDT_ADDRESS = "0xdac17f958d2ee523a2206206994597c13d831ec7"
-USDT_DECIMALS = 6
 AMOUNT_THRESHOLD = 1000000
 ERC_20_TRANSFER_EVENT_ABI = '{"name":"Transfer","type":"event","anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}]}'
 
