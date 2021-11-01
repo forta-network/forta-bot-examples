@@ -1,0 +1,27 @@
+{
+  "name": "forta-agent-starter",
+  "version": "0.0.1",
+  "description": "Forta Agent Python starter project",
+  "scripts": {
+    "postinstall": "python3 -m pip install -r requirements_dev.txt",
+    "start": "npm run start:dev",
+    "start:dev": "nodemon --watch src --watch forta.config.json -e py --exec \"forta-agent run\"",
+    "start:prod": "forta-agent run --prod",
+    "tx": "forta-agent run --tx",
+    "block": "forta-agent run --block",
+    "range": "forta-agent run --range",
+    "file": "forta-agent run --file",
+    "publish": "forta-agent publish",
+    "push": "forta-agent push",
+    "disable": "forta-agent disable",
+    "enable": "forta-agent enable",
+    "keyfile": "forta-agent keyfile",
+    "test": "python3 -m pytest"
+  },
+  "dependencies": {
+    "forta-agent": "^0.0.27"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.8"
+  }
+}
