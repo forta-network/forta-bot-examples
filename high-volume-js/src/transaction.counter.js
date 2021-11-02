@@ -30,4 +30,8 @@ module.exports = class TransactionCounter {
       ? this.transactionMap[from].map((t) => t.txHash)
       : [];
   }
+
+  reset(from) {
+    this.transactionMap[from] = [];
+  }
 };

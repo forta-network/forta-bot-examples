@@ -1,7 +1,4 @@
 {
-  // "agentId": "",                         /* Globally unique agent identifier e.g. my-new-agent */
-  // "version": "0.0.1",                    /* Agent version */
-  "documentation": "README.md"
   // "jsonRpcUrl": "",                      /* JSON-RPC url for running agent during development e.g. wss://mainnet.infura.io/ws/v3/YOUR_API_KEY */
   // "imageRepositoryUrl": "",              /* Container image repository for publishing agent images */
   // "imageRepositoryUsername": "",         /* Image repository username for authentication, if required */

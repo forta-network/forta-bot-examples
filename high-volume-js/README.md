@@ -12,7 +12,7 @@ This agent detects a high volume of transactions from any address over the last 
 
 - FORTA-4
   - Fired when an address sends more than 10 transactions in a 5 minute interval
-  - Severity is set to "medium" if volume above 10, "high" if above 30, "critical" if above 50
+  - Severity is always set to "medium"
   - Type is always set to "suspicious"
   - Metadata fields:
     - "from" - the address which is sending a high volume of transactions

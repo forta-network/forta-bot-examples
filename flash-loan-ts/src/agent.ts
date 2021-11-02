@@ -1,23 +1,25 @@
 import BigNumber from 'bignumber.js'
-import Web3 from "web3"
 import { 
   Finding, 
   HandleTransaction, 
   TransactionEvent, 
   FindingSeverity, 
   FindingType,
-  getJsonRpcUrl
+  getEthersProvider,
+  ethers
 } from 'forta-agent'
 
 const HIGH_GAS_THRESHOLD = "7000000"
 const AAVE_V2_ADDRESS = "0x7d2768de32b0b80b7a3454c06bdac94a69ddc7a9"
-const FLASH_LOAN_EVENT_SIGNATURE = "FlashLoan(address,address,address,uint256,uint256,uint16)"
+const FLASH_LOAN_EVENT = "event FlashLoan(address indexed target, address indexed initiator, address indexed asset, uint256 amount, uint256 premium, uint16 referralCode)"
 const INTERESTING_PROTOCOLS = ["0xacd43e627e64355f1861cec6d3a6688b31a6f952"]// Yearn Dai vault
 const BALANCE_DIFF_THRESHOLD = "200000000000000000000"// 200 eth
 
-const web3 = new Web3(getJsonRpcUrl())
+const ethersProvider = getEthersProvider()
 
-function provideHandleTransaction(web3: Web3): HandleTransaction {
+function provideHandleTransaction(
+  ethersProvider: ethers.providers.JsonRpcProvider
+): HandleTransaction {
   return async function handleTransaction(txEvent: TransactionEvent) {
     // report finding if detected a flash loan attack on Yearn Dai vault
     const findings: Finding[] = []
@@ -29,7 +31,7 @@ function provideHandleTransaction(web3: Web3): HandleTransaction {
     if (!txEvent.addresses[AAVE_V2_ADDRESS]) return findings
   
     // if no flash loan events found
-    const flashLoanEvents = txEvent.filterEvent(FLASH_LOAN_EVENT_SIGNATURE)
+    const flashLoanEvents = txEvent.filterLog(FLASH_LOAN_EVENT)
     if (!flashLoanEvents.length) return findings
   
     // if does not involve a protocol we are interested in
@@ -38,8 +40,8 @@ function provideHandleTransaction(web3: Web3): HandleTransaction {
   
     // if balance of affected contract address has not changed by threshold
     const blockNumber = txEvent.blockNumber
-    const currentBalance = new BigNumber(await web3.eth.getBalance(protocolAddress, blockNumber))
-    const previousBalance = new BigNumber(await web3.eth.getBalance(protocolAddress, blockNumber-1))
+    const currentBalance = new BigNumber((await ethersProvider.getBalance(protocolAddress, blockNumber)).toString())
+    const previousBalance = new BigNumber((await ethersProvider.getBalance(protocolAddress, blockNumber-1)).toString())
     const balanceDiff = previousBalance.minus(currentBalance)
     if (balanceDiff.isLessThan(BALANCE_DIFF_THRESHOLD)) return findings
   
@@ -64,5 +66,5 @@ function provideHandleTransaction(web3: Web3): HandleTransaction {
 
 export default {
   provideHandleTransaction,
-  handleTransaction: provideHandleTransaction(web3)
+  handleTransaction: provideHandleTransaction(ethersProvider)
 }

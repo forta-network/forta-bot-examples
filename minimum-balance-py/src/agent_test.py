@@ -6,7 +6,7 @@ from agent import provide_handle_block, ACCOUNT, MIN_BALANCE
 mock_web3 = Mock(eth=Mock(get_balance=Mock()))
 handle_block = provide_handle_block(mock_web3)
 block_event = create_block_event(
-    {'block_hash': '0xa', 'block_number': 1})
+    {'block': {'hash': '0xa', 'number': 1}})
 
 
 class TestMinBalanceAgent:

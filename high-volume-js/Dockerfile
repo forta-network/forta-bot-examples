@@ -6,7 +6,7 @@
 # RUN npm run build
 
 # Final stage: install production dependencies
-FROM node:14.15.5-alpine
+FROM node:12-alpine
 ENV NODE_ENV=production
 WORKDIR /app
 # if using build stage

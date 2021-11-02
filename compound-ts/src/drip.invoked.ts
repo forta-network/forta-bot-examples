@@ -1,19 +1,17 @@
 import BigNumber from 'bignumber.js'
 import { Finding, FindingSeverity, FindingType, TransactionEvent } from "forta-agent";
-import { COMPOUND_TOKEN_ADDRESS, COMPOUND_RESERVOIR_ADDRESS, DRIP_METHOD_ID, ERC20_TRANSFER_EVENT_SIG } from './constants'
+import { COMPOUND_TOKEN_ADDRESS, COMPOUND_RESERVOIR_ADDRESS, ERC20_TRANSFER_EVENT } from './constants'
 
 async function handleTransaction(txEvent: TransactionEvent) {
   const findings: Finding[] = []
 
-  // if not calling compound reservoir, return
-  if (txEvent.to !== COMPOUND_RESERVOIR_ADDRESS) return findings
-
-  // if not calling drip() method, return
-  if (txEvent.transaction.data !== DRIP_METHOD_ID) return findings
+  // if not calling drip() function on Compound Reservoir contract, return
+  const dripFunctionCalls = txEvent.filterFunction("function drip()", COMPOUND_RESERVOIR_ADDRESS)
+  if (!dripFunctionCalls.length) return findings
 
   // determine how much COMP dripped using Transfer event
-  const [transferCompEvent] = txEvent.filterEvent(ERC20_TRANSFER_EVENT_SIG, COMPOUND_TOKEN_ADDRESS)
-  const amountCompDripped = new BigNumber(transferCompEvent.data)
+  const [transferCompEvent] = txEvent.filterLog(ERC20_TRANSFER_EVENT, COMPOUND_TOKEN_ADDRESS)
+  const amountCompDripped = new BigNumber(transferCompEvent.args.value.toString())
 
   findings.push(Finding.fromObject({
     name: "Compound Reservoir Dripped",

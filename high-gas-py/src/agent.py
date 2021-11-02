@@ -4,11 +4,18 @@ MEDIUM_GAS_THRESHOLD = 1000000
 HIGH_GAS_THRESHOLD = 3000000
 CRITICAL_GAS_THRESHOLD = 7000000
 
+findings_count = 0
+
 
 def handle_transaction(transaction_event):
-    findings = []
-    gas_used = int(transaction_event.gas_used)
+    # limiting this agent to emit only 5 findings so that the alert feed is not spammed
+    global findings_count
+    if findings_count >= 5:
+        return []
 
+    findings = []
+
+    gas_used = int(transaction_event.gas_used)
     if gas_used < MEDIUM_GAS_THRESHOLD:
         return findings
 
@@ -22,6 +29,7 @@ def handle_transaction(transaction_event):
             'gas_used': gas_used
         }
     }))
+    findings_count += len(findings)
     return findings
 
 
