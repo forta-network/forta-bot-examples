@@ -1,18 +1,16 @@
-import Web3 from 'web3';
-import { AbiItem } from 'web3-utils';
-import { BlockEvent, Finding, HandleBlock, FindingSeverity, FindingType, getJsonRpcUrl } from 'forta-agent'
+import { BlockEvent, Finding, HandleBlock, FindingSeverity, FindingType, getEthersProvider, ethers } from 'forta-agent'
 import ECCDMetadata from './EthCrossChainData.json'
 
-const web3 = new Web3(getJsonRpcUrl())
+const ethersProvider = getEthersProvider()
 const ECCD_ADDRESS = "0xcf2afe102057ba5c16f899271045a0a37fcb10f2"
-const eccdContract = new web3.eth.Contract(<AbiItem[]>ECCDMetadata.abi, ECCD_ADDRESS)
+const eccdContract = new ethers.Contract(ECCD_ADDRESS, ECCDMetadata.abi, ethersProvider)
 let cachedPkBytes: string
 
 const handleBlock: HandleBlock = async (blockEvent: BlockEvent) => {
   const findings: Finding[] = [];
   
   // get the keeper public keys on the EthCrossChainData contract for the specified block
-  const pkBytes = await eccdContract.methods.getCurEpochConPubKeyBytes().call({}, blockEvent.blockNumber)
+  const pkBytes = await eccdContract.getCurEpochConPubKeyBytes({ blockTag: blockEvent.blockNumber})
   // if the keys have changed from the previous block, fire an alert
   if (cachedPkBytes && cachedPkBytes !== pkBytes) {
     findings.push(Finding.fromObject({

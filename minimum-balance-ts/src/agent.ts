@@ -1,25 +1,25 @@
 import BigNumber from 'bignumber.js'
-import Web3 from 'web3'
 import { 
   BlockEvent, 
   Finding, 
   HandleBlock, 
   FindingSeverity, 
   FindingType,
-  getJsonRpcUrl
+  getEthersProvider,
+  ethers
 } from 'forta-agent'
 
 export const ACCOUNT = "0x6efef34e81fd201edf18c7902948168e9ebb88ae"
 export const MIN_BALANCE = "500000000000000000" // 0.5 eth
 
-const web3 = new Web3(getJsonRpcUrl())
+const ethersProvider = getEthersProvider()
 
-function provideHandleBlock(web3: Web3): HandleBlock {
+function provideHandleBlock(ethersProvider: ethers.providers.JsonRpcProvider): HandleBlock {
   return async function handleBlock(blockEvent: BlockEvent) {
     // report finding if specified account balance falls below threshold
     const findings: Finding[] = []
 
-    const accountBalance = new BigNumber(await web3.eth.getBalance(ACCOUNT, blockEvent.blockNumber))
+    const accountBalance = new BigNumber((await ethersProvider.getBalance(ACCOUNT, blockEvent.blockNumber)).toString())
     if (accountBalance.isGreaterThanOrEqualTo(MIN_BALANCE)) return findings
 
     findings.push(
@@ -42,5 +42,5 @@ function provideHandleBlock(web3: Web3): HandleBlock {
 
 export default {
   provideHandleBlock,
-  handleBlock: provideHandleBlock(web3)
+  handleBlock: provideHandleBlock(ethersProvider)
 }

@@ -1,10 +1,8 @@
 import BigNumber from 'bignumber.js'
-import Web3 from 'web3';
-import { AbiItem } from 'web3-utils';
-import { BlockEvent, Finding, HandleBlock, FindingSeverity, FindingType, getJsonRpcUrl } from 'forta-agent'
+import { BlockEvent, Finding, HandleBlock, FindingSeverity, FindingType, getEthersProvider, ethers } from 'forta-agent'
 import ERC20Abi from './ERC20Abi.json'
 
-const web3 = new Web3(getJsonRpcUrl())
+const ethersProvider = getEthersProvider()
 const POLY_ASSET_PROXY = "0x250e76987d838a75310c34bf422ea9f1ac4cc906"
 const tokenAddresses: { [symbol: string] : string} = {
   "ETH": "0x0",
@@ -27,10 +25,10 @@ const handleBlock: HandleBlock = async (blockEvent: BlockEvent) => {
   const balanceQueries = []
   for (let i=0; i<tokens.length; i++) {
     if (tokens[i] === "ETH") {
-      balanceQueries.push(web3.eth.getBalance(POLY_ASSET_PROXY, blockEvent.blockNumber))
+      balanceQueries.push(ethersProvider.getBalance(POLY_ASSET_PROXY, blockEvent.blockNumber))
     } else {
-      const erc20Contract = new web3.eth.Contract(<AbiItem[]>ERC20Abi, tokenAddresses[tokens[i]])
-      balanceQueries.push(erc20Contract.methods.balanceOf(POLY_ASSET_PROXY).call({}, blockEvent.blockNumber))
+      const erc20Contract = new ethers.Contract(tokenAddresses[tokens[i]], ERC20Abi, ethersProvider)
+      balanceQueries.push(erc20Contract.balanceOf(POLY_ASSET_PROXY, {blockTag: blockEvent.blockNumber}))
     }
   }
   const currBalances = await Promise.all(balanceQueries)
@@ -39,7 +37,7 @@ const handleBlock: HandleBlock = async (blockEvent: BlockEvent) => {
   let currBalance, prevBalance
   for (let i=0; i<tokens.length; i++) {
     prevBalance = tokenBalances[tokens[i]]
-    currBalance = currBalances[i]
+    currBalance = currBalances[i].toString()
 
     if (prevBalance && new BigNumber(currBalance).isLessThan(prevBalance)) {
       const diff = new BigNumber(prevBalance).minus(currBalance)

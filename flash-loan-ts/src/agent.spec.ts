@@ -9,10 +9,8 @@ import agent from "./agent"
 
 describe("flash loan agent", () => {
   let handleTransaction: HandleTransaction;
-  const mockWeb3 = {
-    eth : {
-      getBalance: jest.fn()
-    }
+  const mockEthersProvider = {
+    getBalance: jest.fn()
   } as any
 
   const createTxEvent = ({ gasUsed, addresses, logs, blockNumber }: any) => createTransactionEvent({
@@ -23,7 +21,7 @@ describe("flash loan agent", () => {
   })
 
   beforeAll(() => {
-    handleTransaction = agent.provideHandleTransaction(mockWeb3)
+    handleTransaction = agent.provideHandleTransaction(mockEthersProvider)
   })
 
   describe("handleTransaction", () => {
@@ -48,20 +46,20 @@ describe("flash loan agent", () => {
           "0x7d2768de32b0b80b7a3454c06bdac94a69ddc7a9": true,
           [protocolAddress]: true
         },
-        logs: [flashLoanEvent],
         blockNumber
       })
+      txEvent.filterLog = jest.fn().mockReturnValue([flashLoanEvent])
       const currentBalance = "1"
       const previousBalance = "200000000000000000001"
       const balanceDiff = "200000000000000000000"
-      mockWeb3.eth.getBalance.mockReturnValueOnce(currentBalance)
-      mockWeb3.eth.getBalance.mockReturnValueOnce(previousBalance)
+      mockEthersProvider.getBalance.mockReturnValueOnce(currentBalance)
+      mockEthersProvider.getBalance.mockReturnValueOnce(previousBalance)
 
       const findings = await handleTransaction(txEvent)
 
-      expect(mockWeb3.eth.getBalance).toHaveBeenCalledTimes(2)
-      expect(mockWeb3.eth.getBalance).toHaveBeenNthCalledWith(1, protocolAddress, blockNumber)
-      expect(mockWeb3.eth.getBalance).toHaveBeenNthCalledWith(2, protocolAddress, blockNumber-1)
+      expect(mockEthersProvider.getBalance).toHaveBeenCalledTimes(2)
+      expect(mockEthersProvider.getBalance).toHaveBeenNthCalledWith(1, protocolAddress, blockNumber)
+      expect(mockEthersProvider.getBalance).toHaveBeenNthCalledWith(2, protocolAddress, blockNumber-1)
       expect(findings).toStrictEqual([
         Finding.fromObject({
           name: "Flash Loan with Loss",

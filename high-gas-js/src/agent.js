@@ -1,17 +1,21 @@
 const highGasUsedAgent = require("./high.gas.used");
 const highGasFeeAgent = require("./high.gas.fee");
 
+let findingsCount = 0;
+
 function provideHandleTransaction(highGasUsedAgent, highGasFeeAgent) {
   return async function handleTransaction(txEvent) {
-    const findings = [];
+    // limiting this agent to emit only 5 findings so that the alert feed is not spammed
+    if (findingsCount >= 5) return [];
 
-    const [highGasUsedFindings, highGasFeeFindings] = await Promise.all([
-      highGasUsedAgent.handleTransaction(txEvent),
-      highGasFeeAgent.handleTransaction(txEvent),
-    ]);
+    const findings = (
+      await Promise.all([
+        highGasUsedAgent.handleTransaction(txEvent),
+        highGasFeeAgent.handleTransaction(txEvent),
+      ])
+    ).flat();
 
-    findings.push(...highGasUsedFindings);
-    findings.push(...highGasFeeFindings);
+    findingsCount += findings.length;
     return findings;
   };
 }

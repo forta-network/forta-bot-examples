@@ -12,12 +12,15 @@
     "range": "npm run build && forta-agent run --range",
     "file": "npm run build && forta-agent run --file",
     "publish": "forta-agent publish",
+    "push": "forta-agent push",
+    "disable": "forta-agent disable",
+    "enable": "forta-agent enable",
+    "keyfile": "forta-agent keyfile",
     "test": "jest"
   },
   "dependencies": {
     "bignumber.js": "^9.0.1",
-    "forta-agent": "^0.0.18",
-    "web3": "^1.6.0"
+    "forta-agent": "^0.0.27"
   },
   "devDependencies": {
     "@types/jest": "^27.0.1",

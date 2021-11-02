@@ -12,10 +12,14 @@
     "range": "forta-agent run --range",
     "file": "forta-agent run --file",
     "publish": "forta-agent publish",
+    "push": "forta-agent push",
+    "disable": "forta-agent disable",
+    "enable": "forta-agent enable",
+    "keyfile": "forta-agent keyfile",
     "test": "jest"
   },
   "dependencies": {
-    "forta-agent": "^0.0.13"
+    "forta-agent": "^0.0.27"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",

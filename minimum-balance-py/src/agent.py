@@ -1,5 +1,4 @@
-from web3 import Web3
-from forta_agent import Finding, FindingType, FindingSeverity, get_json_rpc_url
+from forta_agent import Finding, FindingType, FindingSeverity, get_web3_provider, Web3
 
 ACCOUNT = "0x6efef34e81fd201edf18c7902948168e9ebb88ae"
 MIN_BALANCE = int("500000000000000000")  # 0.5 eth
@@ -9,9 +8,9 @@ def provide_handle_block(w3):
     def handle_block(block_event):
         findings = []
 
+        print(f'block_number={block_event.block_number}')
         balance = int(w3.eth.get_balance(
             Web3.toChecksumAddress(ACCOUNT), int(block_event.block_number)))
-        print(f'balance is {balance}')
         if (balance >= MIN_BALANCE):
             return findings
 
@@ -31,7 +30,7 @@ def provide_handle_block(w3):
     return handle_block
 
 
-w3 = Web3(Web3.HTTPProvider(get_json_rpc_url()))
+w3 = get_web3_provider()
 real_handle_block = provide_handle_block(w3)
 
 
