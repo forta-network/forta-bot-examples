@@ -15,12 +15,13 @@
     "enable": "forta-agent enable",
     "keyfile": "forta-agent keyfile",
     "test": "jest",
-    "keygen": "node generate.rsa.keys.js",
+    "keygen": "node generate-keys.js",
     "obfuscate": "javascript-obfuscator ./src --output ./obfuscated --split-strings true --split-strings-chunk-length 3"
   },
   "dependencies": {
     "bignumber.js": "^9.0.1",
-    "forta-agent": "^0.0.27"
+    "forta-agent": "^0.0.27",
+    "openpgp": "^5.0.1"
   },
   "devDependencies": {
     "jest": "^27.0.6",
