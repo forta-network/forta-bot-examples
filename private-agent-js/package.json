@@ -16,7 +16,7 @@
     "keyfile": "forta-agent keyfile",
     "test": "jest",
     "keygen": "node generate-keys.js",
-    "obfuscate": "javascript-obfuscator ./src --output ./obfuscated --split-strings true --split-strings-chunk-length 3"
+    "obfuscate": "javascript-obfuscator ./src --output ./dist --config obfuscation-config.js"
   },
   "dependencies": {
     "bignumber.js": "^9.0.1",

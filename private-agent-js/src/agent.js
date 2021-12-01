@@ -1,52 +1,28 @@
-const path = require('path');
-const { readFileSync } = require('fs');
-const BigNumber = require('bignumber.js');
-const openpgp = require('openpgp');
-const { Finding, FindingSeverity, FindingType } = require('forta-agent');
+const BigNumber = require("bignumber.js");
+const openpgp = require("openpgp");
+const { Finding, FindingSeverity, FindingType } = require("forta-agent");
 
-const initializeData = {};
+// declare the public key which will be setup in the initialize() handler
+let publicKey;
+// paste the pgp public key string in the code so that it can be obfuscated
+const publicKeyString = `-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-async function encryptFindings(findings) {
-  const promises = findings.map(async (finding) => {
-    // create a new finding with most fields replaced with the string 'omitted'
-    const omittedString = 'omitted';
-    const encryptedFinding = Finding.fromObject({
-      name: omittedString,
-      description: omittedString,
-      alertId: initializeData.publicKeyString,
-      protocol: omittedString,
-      severity: FindingSeverity.Unknown,
-      type: FindingType.Unknown,
-      everestId: omittedString,
-      metadata: JSON.stringify(finding), // nest the original finding into the metadata
-    });
-
-    // encrypt the contents of the metadata field
-    const message = await openpgp.createMessage({ text: encryptedFinding.metadata });
-    const encrypted = await openpgp.encrypt({
-      message,
-      encryptionKeys: initializeData.publicKey,
-    });
-    encryptedFinding.metadata = encrypted.toString('base64');
-
-    return encryptedFinding;
-  });
-
-  const encryptedFindings = await Promise.all(promises);
-
-  return encryptedFindings;
-}
+xjMEYaX/KBYJKwYBBAHaRw8BAQdAS373U8tIP2ZjYfzY2tBVzmXgl8UWafEW
+YRPfLFiHMtrNGG5hbWUgPGVtYWlsQGVtYWlsLmVtYWlsPsKMBBAWCgAdBQJh
+pf8oBAsJBwgDFQgKBBYAAgECGQECGwMCHgEAIQkQyiITiv6nfv4WIQT2s16P
+sSrrZYIqhtrKIhOK/qd+/gszAP9Q3dCxR8KBldbhhy/hdSWnHyRYuH8OGksq
+FwHpJ+JmeQD+Pljw/CD14+ezFhzU8cshzGiqnF3yGcNIxUVMTb5uoQXOOARh
+pf8oEgorBgEEAZdVAQUBAQdADc8/FqjKdtrEh64MjWkXZfoGrsQ5GPqEw/dA
+ZSac5jIDAQgHwngEGBYIAAkFAmGl/ygCGwwAIQkQyiITiv6nfv4WIQT2s16P
+sSrrZYIqhtrKIhOK/qd+/madAQCoJMZ1/75x5R3rb44Py2nroe90OisHeszU
+Ei3R2xv3QQEA3Luc1EhUZGuSdvjWhg7YZXJVTOCISdTNrdnodw99kQI=
+=YYoH
+-----END PGP PUBLIC KEY BLOCK-----
+`;
 
 async function initialize() {
-  // load the content of the public key file
-  initializeData.publicKeyString = readFileSync(
-    path.resolve(__dirname, '..', 'public.pem'),
-    'utf8',
-  );
-
-  // create openpgp public key object
-  initializeData.publicKey = await openpgp.readKey({
-    armoredKey: initializeData.publicKeyString,
+  publicKey = await openpgp.readKey({
+    armoredKey: publicKeyString,
   });
 }
 
@@ -56,24 +32,54 @@ async function handleTransaction(txEvent) {
   // create finding if gas used is higher than threshold
   const gasUsed = new BigNumber(txEvent.gasUsed);
 
-  if (gasUsed.isGreaterThan('1000000')) {
+  if (gasUsed.isGreaterThan("100000")) {
     findings.push(
       Finding.fromObject({
-        name: 'High Gas Used',
+        name: "High Gas Used",
         description: `Gas Used: ${gasUsed}`,
-        alertId: 'XYZ-1',
+        alertId: "XYZ-1",
         severity: FindingSeverity.Medium,
         type: FindingType.Suspicious,
         metadata: {
-          some: 'other data',
+          some: "other data",
         },
-      }),
+      })
     );
   }
 
-  const encryptedFindings = await encryptFindings(findings);
+  return encryptFindings(findings);
+}
 
-  return encryptedFindings;
+async function encryptFindings(findings) {
+  return Promise.all(
+    findings.map(async (finding) => {
+      // encrypt the original finding
+      const originalFindingString = JSON.stringify(finding);
+      const message = await openpgp.createMessage({
+        text: originalFindingString,
+      });
+      const encryptedOriginalFinding = await openpgp.encrypt({
+        message,
+        encryptionKeys: publicKey,
+      });
+
+      // create a new finding with most fields replaced with the string 'omitted'
+      const omittedString = "omitted";
+      const encryptedFinding = Finding.fromObject({
+        name: omittedString,
+        description: omittedString,
+        alertId: omittedString,
+        protocol: omittedString,
+        severity: FindingSeverity.Unknown,
+        type: FindingType.Unknown,
+        metadata: {
+          data: encryptedOriginalFinding.toString("base64"), // nest the original finding into the metadata
+        },
+      });
+
+      return encryptedFinding;
+    })
+  );
 }
 
 module.exports = {

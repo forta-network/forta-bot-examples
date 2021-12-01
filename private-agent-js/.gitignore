@@ -1,4 +1,4 @@
 node_modules
-dist
 forta.config.json
 private.pem
+public.pem
