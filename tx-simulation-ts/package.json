@@ -1,0 +1,34 @@
+{
+  "name": "forta-agent-starter",
+  "version": "0.0.1",
+  "description": "Forta Agent Typescript starter project",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run start:dev",
+    "start:dev": "nodemon --watch src --watch forta.config.json -e js,ts,json  --exec \"npm run build && forta-agent run\"",
+    "start:prod": "forta-agent run --prod",
+    "tx": "npm run build && forta-agent run --tx",
+    "block": "npm run build && forta-agent run --block",
+    "range": "npm run build && forta-agent run --range",
+    "file": "npm run build && forta-agent run --file",
+    "publish": "forta-agent publish",
+    "push": "forta-agent push",
+    "disable": "forta-agent disable",
+    "enable": "forta-agent enable",
+    "keyfile": "forta-agent keyfile",
+    "test": "jest"
+  },
+  "dependencies": {
+    "forta-agent": "^0.0.34",
+    "ganache-core": "^2.13.2"
+  },
+  "devDependencies": {
+    "@types/ganache-core": "^2.7.0",
+    "@types/jest": "^27.0.1",
+    "@types/nodemon": "^1.19.0",
+    "jest": "^27.0.6",
+    "nodemon": "^2.0.8",
+    "ts-jest": "^27.0.3",
+    "typescript": "^4.3.4"
+  }
+}
