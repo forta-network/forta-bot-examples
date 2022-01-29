@@ -1,7 +1,7 @@
 {
-  "name": "forta-agent-starter",
+  "name": "filter-event-and-function-agent",
   "version": "0.0.1",
-  "description": "Forta Agent Python starter project",
+  "description": "Forta Agent in Python that filters events and function calls",
   "scripts": {
     "postinstall": "python3 -m pip install -r requirements_dev.txt",
     "start": "npm run start:dev",
