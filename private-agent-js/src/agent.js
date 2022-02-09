@@ -1,6 +1,11 @@
 const BigNumber = require("bignumber.js");
 const openpgp = require("openpgp");
-const { Finding, FindingSeverity, FindingType } = require("forta-agent");
+const {
+  Finding,
+  FindingSeverity,
+  FindingType,
+  setPrivateFindings,
+} = require("forta-agent");
 
 // declare the public key which will be setup in the initialize() handler
 let publicKey;
@@ -24,6 +29,7 @@ async function initialize() {
   publicKey = await openpgp.readKey({
     armoredKey: publicKeyString,
   });
+  setPrivateFindings(true);
 }
 
 async function handleTransaction(txEvent) {
