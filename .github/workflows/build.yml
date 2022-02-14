@@ -18,17 +18,10 @@ jobs:
         # Define step output named dir base on ls command transformed to JSON thanks to jq
   loop:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./
     needs: [directories] # Depends on previous job
     strategy:
       matrix:
         dir: ${{fromJson(needs.directories.outputs.dir)}} # List matrix strategy from directories dynamically
     steps:
       - uses: actions/checkout@v2
-      - run: ls -l
-      - run: cd ${{matrix.dir}}
-      - run: ls -l
-      - run: npm i
-      - run: npm run test
+      - run: cd ${{matrix.dir}} && npm i && npm run test
