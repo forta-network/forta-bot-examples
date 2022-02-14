@@ -18,6 +18,9 @@ jobs:
         # Define step output named dir base on ls command transformed to JSON thanks to jq
   loop:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
     needs: [directories] # Depends on previous job
     strategy:
       matrix:
