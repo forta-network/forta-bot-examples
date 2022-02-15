@@ -24,4 +24,5 @@ jobs:
         dir: ${{fromJson(needs.directories.outputs.dir)}} # List matrix strategy from directories dynamically
     steps:
       - uses: actions/checkout@v2
-      - run: cd ${{matrix.dir}} && npm i && npm run test
+      # only install and run tests if they exist on folder
+      - run: cd ${{matrix.dir}} && if [[ -f ./src/*test* || -f ./src/*spec* ]]; then npm i && npm run test; fi
