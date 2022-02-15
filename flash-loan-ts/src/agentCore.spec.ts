@@ -5,7 +5,7 @@ import {
   HandleTransaction,
   createTransactionEvent
 } from "forta-agent"
-import agent from "./agent"
+import provideHandleTransaction from "./agentCore"
 
 describe("flash loan agent", () => {
   let handleTransaction: HandleTransaction;
@@ -21,7 +21,7 @@ describe("flash loan agent", () => {
   })
 
   beforeAll(() => {
-    handleTransaction = agent.provideHandleTransaction(mockEthersProvider)
+    handleTransaction = provideHandleTransaction(mockEthersProvider)
   })
 
   describe("handleTransaction", () => {

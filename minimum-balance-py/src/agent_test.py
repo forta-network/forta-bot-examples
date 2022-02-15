@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 from web3 import Web3
 from forta_agent import FindingSeverity, FindingType, create_block_event
-from agent import provide_handle_block, ACCOUNT, MIN_BALANCE
+from agent_core import provide_handle_block, ACCOUNT, MIN_BALANCE
 
 mock_web3 = Mock(eth=Mock(get_balance=Mock()))
 handle_block = provide_handle_block(mock_web3)
