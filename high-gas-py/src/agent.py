@@ -1,4 +1,4 @@
-from forta_agent import Finding, FindingType, FindingSeverity
+from forta_agent.finding import Finding, FindingType, FindingSeverity
 
 MEDIUM_GAS_THRESHOLD = 1000000
 HIGH_GAS_THRESHOLD = 3000000
