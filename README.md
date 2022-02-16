@@ -1,4 +1,4 @@
-# Forta Agent SKD usage examples
+# Forta Agent SDK usage examples
 
 [![build](https://github.com/forta-protocol/forta-agent-examples/actions/workflows/build.yml/badge.svg)](https://github.com/forta-protocol/forta-agent-examples/actions/workflows/build.yml)
 
