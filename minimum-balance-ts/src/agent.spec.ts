@@ -1,5 +1,5 @@
 import { Finding, FindingSeverity, FindingType, HandleBlock, createBlockEvent } from "forta-agent"
-import provideHandleBlock, { ACCOUNT, MIN_BALANCE } from "./agentCore";
+import agent, { ACCOUNT, MIN_BALANCE } from "./agent"
 
 describe("minimum balance agent", () => {
   let handleBlock: HandleBlock;
@@ -12,7 +12,7 @@ describe("minimum balance agent", () => {
   })
 
   beforeAll(() => {
-    handleBlock = provideHandleBlock(mockEthersProvider)
+    handleBlock = agent.provideHandleBlock(mockEthersProvider)
   })
 
   describe("handleBlock", () => {
