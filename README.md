@@ -1,5 +1,7 @@
 # Forta Agent Examples
 
+[![build](https://github.com/forta-protocol/forta-agent-examples/actions/workflows/build.yml/badge.svg)](https://github.com/forta-protocol/forta-agent-examples/actions/workflows/build.yml)
+
 These examples demonstrate the possible use cases of Forta Agents with little to no configuration.
 
 To run these examples, you'll need to:

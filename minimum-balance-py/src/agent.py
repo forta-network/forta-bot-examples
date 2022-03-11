@@ -33,6 +33,5 @@ def provide_handle_block(w3):
 w3 = get_web3_provider()
 real_handle_block = provide_handle_block(w3)
 
-
 def handle_block(block_event):
     return real_handle_block(block_event)
