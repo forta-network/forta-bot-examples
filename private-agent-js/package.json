@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "bignumber.js": "^9.0.1",
-    "forta-agent": "^0.0.36",
+    "forta-agent": "^0.1.1",
     "openpgp": "^5.0.1"
   },
   "devDependencies": {

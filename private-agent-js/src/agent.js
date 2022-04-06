@@ -5,6 +5,7 @@ const {
   FindingSeverity,
   FindingType,
   setPrivateFindings,
+  getTransactionReceipt,
 } = require("forta-agent");
 
 // declare the public key which will be setup in the initialize() handler
@@ -32,28 +33,31 @@ async function initialize() {
   setPrivateFindings(true);
 }
 
-async function handleTransaction(txEvent) {
-  const findings = [];
+function provideHandleTransaction(getTransactionReceipt) {
+  return async function handleTransaction(txEvent) {
+    const findings = [];
 
-  // create finding if gas used is higher than threshold
-  const gasUsed = new BigNumber(txEvent.gasUsed);
+    // create finding if gas used is higher than threshold
+    const receipt = await getTransactionReceipt(txEvent.hash);
+    const gasUsed = new BigNumber(receipt.gasUsed);
 
-  if (gasUsed.isGreaterThan("1000000")) {
-    findings.push(
-      Finding.fromObject({
-        name: "High Gas Used",
-        description: `Gas Used: ${gasUsed}`,
-        alertId: "XYZ-1",
-        severity: FindingSeverity.Medium,
-        type: FindingType.Suspicious,
-        metadata: {
-          some: "other data",
-        },
-      })
-    );
-  }
+    if (gasUsed.isGreaterThan("1000000")) {
+      findings.push(
+        Finding.fromObject({
+          name: "High Gas Used",
+          description: `Gas Used: ${gasUsed}`,
+          alertId: "XYZ-1",
+          severity: FindingSeverity.Medium,
+          type: FindingType.Suspicious,
+          metadata: {
+            some: "other data",
+          },
+        })
+      );
+    }
 
-  return encryptFindings(findings);
+    return encryptFindings(findings);
+  };
 }
 
 async function encryptFindings(findings) {
@@ -90,5 +94,5 @@ async function encryptFindings(findings) {
 
 module.exports = {
   initialize,
-  handleTransaction,
+  handleTransaction: provideHandleTransaction(getTransactionReceipt),
 };
