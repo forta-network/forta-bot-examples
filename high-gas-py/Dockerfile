@@ -1,5 +1,5 @@
 # Build stage: compile Python dependencies
-FROM python:3.8-alpine as builder
+FROM python:3.9-alpine as builder
 RUN apk update
 RUN apk add alpine-sdk
 RUN python3 -m pip install --upgrade pip

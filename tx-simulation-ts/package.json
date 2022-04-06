@@ -19,7 +19,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "forta-agent": "^0.0.34",
+    "forta-agent": "^0.1.1",
     "ganache-core": "^2.13.2"
   },
   "devDependencies": {

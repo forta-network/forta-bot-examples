@@ -13,10 +13,9 @@ describe("high gas fee agent", () => {
     getWeiPriceUsd: jest.fn(),
   };
 
-  const createTxEvent = ({ gasUsed, gasPrice }) =>
+  const createTxEvent = ({ gasPrice }) =>
     createTransactionEvent({
       transaction: { gasPrice },
-      receipt: { gasUsed },
     });
 
   beforeAll(() => {
@@ -24,15 +23,16 @@ describe("high gas fee agent", () => {
   });
 
   describe("handleTransaction", () => {
-    const txEvent = createTxEvent({
-      gasUsed: "1",
-      gasPrice: "1",
-    });
+    const mockGasUsed = "1"
+    const mockGasPrice = "1"
+    const txEvent = createTransactionEvent({
+      transaction: { gasPrice: mockGasPrice },
+    })
 
     it("returns empty findings if gas fee is below threshold", async () => {
       mockCryptoPriceGetter.getWeiPriceUsd.mockReturnValueOnce("1");
 
-      const findings = await handleTransaction(txEvent);
+      const findings = await handleTransaction(txEvent, mockGasUsed);
 
       expect(mockCryptoPriceGetter.getWeiPriceUsd).toHaveBeenCalledTimes(1);
       expect(mockCryptoPriceGetter.getWeiPriceUsd).toHaveBeenCalledWith();
@@ -46,7 +46,7 @@ describe("high gas fee agent", () => {
         weiPriceUsd.toString()
       );
 
-      const findings = await handleTransaction(txEvent);
+      const findings = await handleTransaction(txEvent, mockGasUsed);
 
       expect(findings).toStrictEqual([
         Finding.fromObject({

@@ -2,7 +2,7 @@
 
 ## Description
 
-This agent detects transactions with high gas used and high gas fee. Requires API key for CoinMarketCap API in crypto.price.getter.js to fetch ETH price
+This agent detects transactions with high gas used and high gas fee. **Requires API key for CoinMarketCap API in crypto.price.getter.js to fetch ETH price**
 
 ## Supported Chains
 

@@ -4,17 +4,23 @@ const {
   Finding,
   createTransactionEvent,
 } = require("forta-agent");
-const { handleTransaction } = require("./agent");
+const { provideHandleTransaction } = require("./agent");
 
 describe("high gas agent", () => {
-  const createTxEventWithGasUsed = (gasUsed) =>
-    createTransactionEvent({
-      receipt: { gasUsed },
-    });
+  let handleTransaction;
+  const mockTxHash = "0x123";
+  const mockGetTransactionReceipt = jest.fn();
+
+  beforeAll(() => {
+    handleTransaction = provideHandleTransaction(mockGetTransactionReceipt);
+  });
 
   describe("handleTransaction", () => {
     it("returns empty findings if gas used is below threshold", async () => {
-      const txEvent = createTxEventWithGasUsed("1");
+      const txEvent = createTransactionEvent({
+        transaction: { hash: mockTxHash },
+      });
+      mockGetTransactionReceipt.mockReturnValueOnce({ gasUsed: "1" });
 
       const findings = await handleTransaction(txEvent);
 
@@ -22,14 +28,17 @@ describe("high gas agent", () => {
     });
 
     it("returns a finding if gas used is above threshold", async () => {
-      const txEvent = createTxEventWithGasUsed("1000001");
+      const txEvent = createTransactionEvent({
+        transaction: { hash: mockTxHash },
+      });
+      mockGetTransactionReceipt.mockReturnValueOnce({ gasUsed: "1000001" });
 
       const findings = await handleTransaction(txEvent);
 
       expect(findings).toStrictEqual([
         Finding.fromObject({
           name: "High Gas Used",
-          description: `Gas Used: ${txEvent.gasUsed}`,
+          description: `Gas Used: 1000001`,
           alertId: "FORTA-1",
           type: FindingType.Suspicious,
           severity: FindingSeverity.Medium,

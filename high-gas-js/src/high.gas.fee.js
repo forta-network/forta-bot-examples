@@ -9,10 +9,10 @@ const CRITICAL_FEE_THRESHOLD = "1000";
 const cryptoPriceGetter = new CryptoPriceGetter();
 
 function provideHandleTransaction(cryptoPriceGetter) {
-  return async function handleTransaction(txEvent) {
+  return async function handleTransaction(txEvent, gasUsed) {
     // report finding if transaction gas fee in USD is higher than threshold
     const findings = [];
-    const gasUsed = new BigNumber(txEvent.gasUsed);
+    gasUsed = new BigNumber(gasUsed);
     const totalGasCostWei = gasUsed.multipliedBy(txEvent.gasPrice);
     const weiPriceUsd = await cryptoPriceGetter.getWeiPriceUsd();
     const totalFeeUsd = totalGasCostWei.multipliedBy(weiPriceUsd);

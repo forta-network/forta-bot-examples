@@ -2,7 +2,7 @@
 
 ## Description
 
-This agent detects transactions with high gas consumption
+This agent demonstrates how to write a long running task. Read the full walkthrough [here](https://docs.forta.network/en/latest/long-running-tasks/)
 
 ## Supported Chains
 

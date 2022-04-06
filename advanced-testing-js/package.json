@@ -20,7 +20,7 @@
     "simulation": "node run.simulated.transactions.js"
   },
   "dependencies": {
-    "forta-agent": "^0.0.38"
+    "forta-agent": "^0.1.1"
   },
   "devDependencies": {
     "jest": "^27.0.6",
