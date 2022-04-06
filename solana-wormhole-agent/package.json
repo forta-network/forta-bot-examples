@@ -18,7 +18,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "forta-agent": "^0.0.36",
+    "forta-agent": "^0.1.1",
     "@solana/web3.js": "^1.32.1"
   },
   "devDependencies": {
