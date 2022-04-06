@@ -2,7 +2,7 @@
 
 ## Description
 
-This agent detects transactions with high gas consumption
+This agent detects transactions on Rinkeby with high gas consumption. **Requires setting `RINKEBY_RPC_URL` in agent.js**. Read the full walkthrough [here](https://docs.forta.network/en/latest/querying-chains/)
 
 ## Supported Chains
 
