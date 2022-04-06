@@ -12,9 +12,10 @@ describe("blacklisted address agent", () => {
 
   const createTxEventWithAddresses = (addresses: {[addr: string]: boolean}) => createTransactionEvent({
     transaction: {} as any,
-    receipt: {} as any,
+    logs: [],
+    contractAddress: null,
     block: {} as any,
-    addresses
+    addresses,
   })
 
   beforeAll(() => {
