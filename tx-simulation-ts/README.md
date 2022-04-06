@@ -2,7 +2,7 @@
 
 ## Description
 
-This agent simulates transactions using a Ganache fork
+This agent simulates transactions using a Ganache fork. Read the full walkthrough [here](https://docs.forta.network/en/latest/tx-simulation/)
 
 ## Supported Chains
 
