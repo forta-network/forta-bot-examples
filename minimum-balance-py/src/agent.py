@@ -8,7 +8,6 @@ def provide_handle_block(w3):
     def handle_block(block_event):
         findings = []
 
-        print(f'block_number={block_event.block_number}')
         balance = int(w3.eth.get_balance(
             Web3.toChecksumAddress(ACCOUNT), int(block_event.block_number)))
         if (balance >= MIN_BALANCE):
