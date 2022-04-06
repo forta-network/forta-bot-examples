@@ -2,7 +2,7 @@
 
 ## Description
 
-This agent detects transactions with high gas consumption
+This agent detects transactions with high gas consumption and obfuscates its code. Read the full walkthrough [here](https://docs.forta.network/en/latest/sensitive-data/)
 
 ## Supported Chains
 
