@@ -52,7 +52,7 @@ describe("Tether transfer agent", () => {
       const receipt = await tx.wait();
       const txEvent = createTransactionEvent({
         transaction: tx,
-        receipt,
+        logs: receipt.logs,
         block: {
           hash: tx.blockHash,
           number: tx.blockNumber,
@@ -77,7 +77,7 @@ describe("Tether transfer agent", () => {
       const receipt = await tx.wait();
       const txEvent = createTransactionEvent({
         transaction: tx,
-        receipt,
+        logs: receipt.logs,
         block: {
           hash: tx.blockHash,
           number: tx.blockNumber,
