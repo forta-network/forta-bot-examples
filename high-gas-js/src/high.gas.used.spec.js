@@ -7,38 +7,30 @@ const {
 const { handleTransaction } = require("./high.gas.used");
 
 describe("high gas used agent", () => {
-  const createTxEventWithGasUsed = ({ gasUsed }) =>
-    createTransactionEvent({
-      receipt: { gasUsed },
-    });
-
   describe("handleTransaction", () => {
     it("returns empty findings if gas used is below threshold", async () => {
-      const txEvent = createTxEventWithGasUsed({
-        gasUsed: "1",
-      });
+      const txEvent = createTransactionEvent({})
 
-      const findings = await handleTransaction(txEvent);
+      const findings = await handleTransaction(txEvent, "1");
 
       expect(findings).toStrictEqual([]);
     });
 
     it("returns a finding if gas used is above threshold", async () => {
-      const txEvent = createTxEventWithGasUsed({
-        gasUsed: "1000001",
-      });
+      const mockGasUsed = "1000001"
+      const txEvent = createTransactionEvent({})
 
-      const findings = await handleTransaction(txEvent);
+      const findings = await handleTransaction(txEvent, mockGasUsed);
 
       expect(findings).toStrictEqual([
         Finding.fromObject({
           name: "High Gas Used",
-          description: `Gas Used: ${txEvent.gasUsed}`,
+          description: `Gas Used: ${mockGasUsed}`,
           alertId: "FORTA-1",
           type: FindingType.Suspicious,
           severity: FindingSeverity.Medium,
           metadata: {
-            gasUsed: txEvent.gasUsed,
+            gasUsed: mockGasUsed,
           },
         }),
       ]);

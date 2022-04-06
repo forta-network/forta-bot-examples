@@ -11,11 +11,13 @@ describe("high gas agent", () => {
   const mockTxEvent = {
     some: "event",
   };
+  const mockGetTransactionReceipt = jest.fn()
 
   beforeAll(() => {
     handleTransaction = provideHandleTransaction(
       mockHighGasUsedAgent,
-      mockHighGasFeeAgent
+      mockHighGasFeeAgent,
+      mockGetTransactionReceipt
     );
   });
 
@@ -24,17 +26,19 @@ describe("high gas agent", () => {
       const mockFinding = { some: "finding" };
       mockHighGasUsedAgent.handleTransaction.mockReturnValueOnce([mockFinding]);
       mockHighGasFeeAgent.handleTransaction.mockReturnValueOnce([mockFinding]);
+      const mockGasUsed = "10"
+      mockGetTransactionReceipt.mockReturnValueOnce({ gasUsed: mockGasUsed })
 
       const findings = await handleTransaction(mockTxEvent);
 
       expect(findings).toStrictEqual([mockFinding, mockFinding]);
       expect(mockHighGasUsedAgent.handleTransaction).toHaveBeenCalledTimes(1);
       expect(mockHighGasUsedAgent.handleTransaction).toHaveBeenCalledWith(
-        mockTxEvent
+        mockTxEvent, mockGasUsed
       );
       expect(mockHighGasFeeAgent.handleTransaction).toHaveBeenCalledTimes(1);
       expect(mockHighGasFeeAgent.handleTransaction).toHaveBeenCalledWith(
-        mockTxEvent
+        mockTxEvent, mockGasUsed
       );
     });
   });

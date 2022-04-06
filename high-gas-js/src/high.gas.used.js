@@ -6,9 +6,9 @@ const HIGH_GAS_THRESHOLD = "3000000";
 const CRITICAL_GAS_THRESHOLD = "7000000";
 
 // report finding if gas used in transaction is higher than threshold
-const handleTransaction = async (txEvent) => {
+const handleTransaction = async (txEvent, gasUsed) => {
   const findings = [];
-  const gasUsed = new BigNumber(txEvent.gasUsed);
+  gasUsed = new BigNumber(gasUsed);
 
   if (gasUsed.isLessThan(MEDIUM_GAS_THRESHOLD)) return findings;
 
