@@ -12,21 +12,23 @@ describe("flash loan agent", () => {
   const mockEthersProvider = {
     getBalance: jest.fn()
   } as any
+  const mockGetTransactionReceipt = jest.fn()
 
-  const createTxEvent = ({ gasUsed, addresses, logs, blockNumber }: any) => createTransactionEvent({
+  const createTxEvent = ({ addresses, logs, blockNumber }: any) => createTransactionEvent({
     transaction: {} as any,
-    receipt: { gasUsed, logs } as any,
+    logs,
+    contractAddress: null,
     block: { number: blockNumber } as any,
     addresses
   })
 
   beforeAll(() => {
-    handleTransaction = agent.provideHandleTransaction(mockEthersProvider)
+    handleTransaction = agent.provideHandleTransaction(mockEthersProvider, mockGetTransactionReceipt)
   })
 
   describe("handleTransaction", () => {
-    it("returns empty findings if gas used is below threshold", async () => {
-      const txEvent = createTxEvent({ gasUsed: "1" })
+    it("returns empty findings if aave not involved", async () => {
+      const txEvent = createTxEvent({ addresses: {} })
 
       const findings = await handleTransaction(txEvent)
 
@@ -40,8 +42,8 @@ describe("flash loan agent", () => {
       }
       const protocolAddress = "0xacd43e627e64355f1861cec6d3a6688b31a6f952"
       const blockNumber = 100
+      mockGetTransactionReceipt.mockReturnValueOnce({ gasUsed:"7000001" })
       const txEvent = createTxEvent({ 
-        gasUsed: "7000001",
         addresses: {
           "0x7d2768de32b0b80b7a3454c06bdac94a69ddc7a9": true,
           [protocolAddress]: true

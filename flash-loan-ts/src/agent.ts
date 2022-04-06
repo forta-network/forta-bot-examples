@@ -6,7 +6,9 @@ import {
   FindingSeverity, 
   FindingType,
   getEthersProvider,
-  ethers
+  ethers,
+  getTransactionReceipt,
+  Receipt
 } from 'forta-agent'
 
 const HIGH_GAS_THRESHOLD = "7000000"
@@ -18,14 +20,12 @@ const BALANCE_DIFF_THRESHOLD = "200000000000000000000"// 200 eth
 const ethersProvider = getEthersProvider()
 
 function provideHandleTransaction(
-  ethersProvider: ethers.providers.JsonRpcProvider
+  ethersProvider: ethers.providers.JsonRpcProvider,
+  getTransactionReceipt: (txHash: string) => Promise<Receipt>
 ): HandleTransaction {
   return async function handleTransaction(txEvent: TransactionEvent) {
     // report finding if detected a flash loan attack on Yearn Dai vault
     const findings: Finding[] = []
-    
-    // if gas too low
-    if (new BigNumber(txEvent.gasUsed).isLessThan(HIGH_GAS_THRESHOLD)) return findings
   
     // if aave not involved
     if (!txEvent.addresses[AAVE_V2_ADDRESS]) return findings
@@ -37,6 +37,10 @@ function provideHandleTransaction(
     // if does not involve a protocol we are interested in
     const protocolAddress = INTERESTING_PROTOCOLS.find((address) => txEvent.addresses[address])
     if (!protocolAddress) return findings
+
+    // if gas too low
+    const  { gasUsed } = await getTransactionReceipt(txEvent.hash)
+    if (new BigNumber(gasUsed).isLessThan(HIGH_GAS_THRESHOLD)) return findings
   
     // if balance of affected contract address has not changed by threshold
     const blockNumber = txEvent.blockNumber
@@ -66,5 +70,5 @@ function provideHandleTransaction(
 
 export default {
   provideHandleTransaction,
-  handleTransaction: provideHandleTransaction(ethersProvider)
+  handleTransaction: provideHandleTransaction(ethersProvider, getTransactionReceipt)
 }
