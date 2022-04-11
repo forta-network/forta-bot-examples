@@ -1,0 +1,16 @@
+{
+  "repositories": [
+    {
+      "owner": "openzeppelin",
+      "name": "openzeppelin-contracts",
+      "branch": "master",
+      "path": "contracts"
+    },
+    {
+      "owner": "gnosis",
+      "name": "safe-contracts",
+      "branch": "main",
+      "path": "contracts"
+    }
+  ]
+}
