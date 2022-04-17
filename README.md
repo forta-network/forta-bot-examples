@@ -1,6 +1,6 @@
-# Forta Agent Examples
+# Forta Detection Bot Examples
 
-These examples demonstrate the possible use cases of Forta Agents with little to no configuration.
+These examples demonstrate the possible use cases of Forta detection bots with little to no configuration.
 
 To run these examples, you'll need to:
 
