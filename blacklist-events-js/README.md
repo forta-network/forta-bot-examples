@@ -2,7 +2,7 @@
 
 ## Description
 
-This bot emits an alert when an address gets added to or removed from the USDT/USDC Token Contracts' blacklists."
+This bot emits an alert when an address gets added to or removed from the USDT/USDC Token Contracts' blacklists.
 
 This bot was created with Arbritrary Execution's [Admininstrative/Governance Events Detection Bot Template](https://github.com/arbitraryexecution/forta-bot-templates/blob/main/admin-events/SETUP.md)
 
