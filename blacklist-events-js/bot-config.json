@@ -1,0 +1,41 @@
+{
+  "developerAbbreviation": "FORTA",
+  "protocolName": "Centre/Tether",
+  "protocolAbbreviation": "USDC-USDT",
+  "contracts": {
+    "USDT Token": {
+      "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+      "abiFile": "tether-token.json",
+      "events": {
+        "AddedBlackList": {
+          "type": "Suspicious",
+          "severity": "Critical"
+        },
+        "RemovedBlackList": {
+          "type": "Info",
+          "severity": "Low"
+        }
+      }
+    },
+    "USDC Token Proxy": {
+      "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "abiFile": "fiat-token-proxy.json",
+      "proxy": "USDC Token",
+      "events": {}
+    },
+    "USDC Token": {
+      "address": "0x0882477e7895bdC5cea7cB1552ed914aB157Fe56",
+      "abiFile": "fiat-token-v1.json",
+      "events": {
+        "Blacklisted": {
+          "type": "Suspicious",
+          "severity": "Critical"
+        },
+        "UnBlacklisted": {
+          "type": "Info",
+          "severity": "Low"
+        }
+      }
+    }
+  }
+}
