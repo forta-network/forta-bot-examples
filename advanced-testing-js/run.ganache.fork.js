@@ -1,5 +1,5 @@
 const { ethers } = require("forta-agent");
-const ganache = require("ganache-core");
+const ganache = require("ganache");
 const { USER } = require("./src/constants");
 
 const RPC_URL = "https://mainnet.infura.io/v3/YOUR_API_KEY";
@@ -16,9 +16,13 @@ async function runGanacheFork() {
     `starting ganache fork on block ${blockNumber} from ${RPC_URL}...`
   );
   const server = ganache.server({
-    fork: RPC_URL,
-    fork_block_number: blockNumber,
-    unlocked_accounts: [USER],
+    fork: {
+      url: RPC_URL, 
+      blockNumber 
+    }, 
+     wallet: { 
+      unlockedAccounts: [USER] 
+    },
   });
 
   // start a rpc server

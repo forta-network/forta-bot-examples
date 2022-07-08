@@ -7,7 +7,7 @@ import {
   getJsonRpcUrl,
   ethers
 } from 'forta-agent'
-import ganache from 'ganache-core'
+import ganache from 'ganache'
 
 export const USER_ADDRESS = "0x72cea5e3540956b2b71a91012a983267472d2fb1"
 export const USER2_ADDRESS = "0xc458e1a4ec03c5039fbf38221c54be4e63731e2a"
@@ -39,9 +39,14 @@ const TETHER_ABI = [
 // returns an ethers provider pointing to a forked version of the chain from the specified block
 function getEthersForkProvider(blockNumber: number) {
   return new ethers.providers.Web3Provider(ganache.provider({
-    fork: getJsonRpcUrl(), // specify the chain to fork from
-    fork_block_number: blockNumber,// specify the block number to fork from
-    unlocked_accounts: [USER_ADDRESS] // specify any accounts to unlock so you dont need the private key to make transactions
+    fork: {
+      url: getJsonRpcUrl(), // specify the chain to fork from
+      blockNumber // specify the block number to fork from
+    }, 
+     wallet: { 
+      unlockedAccounts: [USER_ADDRESS] // specify any accounts to unlock so you dont need the private key to make transactions
+    },
+    logging: { quiet: true }, // turn off ganache logs
   }) as any)
 }
 
