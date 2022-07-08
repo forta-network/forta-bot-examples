@@ -20,10 +20,9 @@
   },
   "dependencies": {
     "forta-agent": "^0.1.1",
-    "ganache-core": "^2.13.2"
+    "ganache": "^7.3.2"
   },
   "devDependencies": {
-    "@types/ganache-core": "^2.7.0",
     "@types/jest": "^27.0.1",
     "@types/nodemon": "^1.19.0",
     "jest": "^27.0.6",
