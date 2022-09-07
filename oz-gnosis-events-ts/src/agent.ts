@@ -47,7 +47,7 @@ let abiCoder = new ethers.utils.AbiCoder();
 const initialize: Initialize = async () => {
   const eventMap: { [signature: string]: string } = {};
   try {
-    chainId = (await getEthersProvider().getNetwork()).chainId;
+    // chainId = (await getEthersProvider().getNetwork()).chainId;
     // for each repository specified in config, extract event declarations from smart contracts
     for (const repository of config.repositories) {
       const solidityFiles = await getSolidityFiles(repository);
@@ -66,7 +66,7 @@ const initialize: Initialize = async () => {
             EVENT_TOPIC_TO_FRAGMENT[sigHash] = [fragment];
             processInputsMetadata(fragment);
           } else {
-            // handle the case where event signature is same, but its a valid different event
+            // handle the case where event signature is same, but its a valid different event (only required for Transfer and Approval events)
             // i.e. ERC-20 Transfer vs ERC-721 Transfer have same signature but the last argument is indexed only for ERC-721
             const originalFragment = EVENT_TOPIC_TO_FRAGMENT[sigHash][0];
             let sameArgsIndexed = true;
@@ -76,7 +76,17 @@ const initialize: Initialize = async () => {
               }
             });
             if (!sameArgsIndexed) {
-              EVENT_TOPIC_TO_FRAGMENT[sigHash].push(fragment);
+              // erc-721 events have all arguments indexed
+              const isErc721Event = fragment.inputs.every(
+                (input) => input.indexed
+              );
+              // keep erc20 fragments at position 0 as perf optimization
+              if (isErc721Event) {
+                EVENT_TOPIC_TO_FRAGMENT[sigHash].push(fragment);
+              } else {
+                EVENT_TOPIC_TO_FRAGMENT[sigHash][0] = fragment;
+                EVENT_TOPIC_TO_FRAGMENT[sigHash][1] = originalFragment;
+              }
               processInputsMetadata(fragment);
             }
           }
@@ -96,11 +106,11 @@ const handleTransaction: HandleTransaction = async (
   const findings: Finding[] = [];
 
   try {
-    const start = Date.now();
+    // const start = Date.now();
 
     // filter the transaction logs for events of interest
     const events = filterLog(txEvent.logs);
-    const filterStop = Date.now();
+    // const filterStop = Date.now();
 
     events.forEach((event) => {
       const metadata: { [key: string]: string } = {
@@ -108,9 +118,9 @@ const handleTransaction: HandleTransaction = async (
       };
       Object.keys(event.args).forEach((key) => {
         // only add string keys from event.args
-        if (isNaN(parseInt(key))) {
-          metadata[key] = event.args[key].toString();
-        }
+        // if (isNaN(parseInt(key))) {
+        metadata[key] = event.args[key].toString();
+        // }
       });
       findings.push(
         Finding.fromObject({
@@ -124,7 +134,7 @@ const handleTransaction: HandleTransaction = async (
       );
     });
 
-    collectMetrics(start, filterStop, findings.length, txEvent.logs.length);
+    // collectMetrics(start, filterStop, findings.length, txEvent.logs.length);
   } catch (e: any) {
     console.log(`error processing tx ${txEvent.hash}:`, e.message);
   }
@@ -207,22 +217,27 @@ function filterLog(logs: Log[]) {
   const results: any[] = [];
   for (const log of logs) {
     const fragments = EVENT_TOPIC_TO_FRAGMENT[log.topics[0]];
-    if (!fragments?.length) continue;
+    if (!fragments) continue;
 
     try {
-      // there could be multiple fragments with the same topic signature, so try all of them
-      for (const fragment of fragments) {
-        results.push({
-          name: fragment.name,
-          address: log.address,
-          args: decodeEventLog(
-            fragment as ethers.utils.EventFragment,
-            log.data,
-            log.topics
-          ),
-        });
+      // if more than one fragment, figure out if event is erc20 vs erc721 (erc721 will have 4 topics for Transfer/Approval)
+      let fragment = fragments[0];
+      if (fragments.length > 1 && log.topics.length === 4) {
+        fragment = fragments[1];
       }
-    } catch (e) {}
+
+      results.push({
+        name: fragment.name,
+        address: log.address,
+        args: decodeEventLog(
+          fragment as ethers.utils.EventFragment,
+          log.data,
+          log.topics
+        ),
+      });
+    } catch (e) {
+      console.log("error decoding log", e);
+    }
   }
   return results;
 }
@@ -267,20 +282,20 @@ function processInputsMetadata(eventFragment: ethers.utils.Fragment) {
 function decodeEventLog(
   eventFragment: ethers.utils.EventFragment,
   data: ethers.utils.BytesLike,
-  topics?: ReadonlyArray<string>
+  topics: ReadonlyArray<string>
 ): ethers.utils.Result {
   // if (typeof(eventFragment) === "string") {
   //     eventFragment = this.getEvent(eventFragment);
   // }
 
-  if (topics != null) {
-    // && !eventFragment.anonymous) {
-    // let topicHash = this.getEventTopic(eventFragment);
-    // if (!isHexString(topics[0], 32) || topics[0].toLowerCase() !== topicHash) {
-    //     logger.throwError("fragment/topic mismatch", Logger.errors.INVALID_ARGUMENT, { argument: "topics[0]", expected: topicHash, value: topics[0] });
-    // }
-    topics = topics.slice(1);
-  }
+  // if (topics != null) {
+  // && !eventFragment.anonymous) {
+  // let topicHash = this.getEventTopic(eventFragment);
+  // if (!isHexString(topics[0], 32) || topics[0].toLowerCase() !== topicHash) {
+  //     logger.throwError("fragment/topic mismatch", Logger.errors.INVALID_ARGUMENT, { argument: "topics[0]", expected: topicHash, value: topics[0] });
+  // }
+  topics = topics.slice(1);
+  // }
 
   // let indexed: Array<ethers.utils.ParamType> = [];
   // let nonIndexed: Array<ethers.utils.ParamType> = [];
@@ -321,6 +336,7 @@ function decodeEventLog(
   let resultNonIndexed = abiCoder.decode(nonIndexed, data, true);
 
   let result: Array<any> & { [key: string]: any } = [];
+  let namedResult: Array<any> & { [key: string]: any } = [];
   let nonIndexedIndex = 0,
     indexedIndex = 0;
   eventFragment.inputs.forEach((param, index) => {
@@ -355,7 +371,7 @@ function decodeEventLog(
       const value = result[index];
 
       // Make error named values throw on access
-      if (value instanceof Error) {
+      if (!(value instanceof Error)) {
         // Object.defineProperty(result, param.name, {
         //   enumerable: true,
         //   get: () => {
@@ -365,26 +381,26 @@ function decodeEventLog(
         //     );
         //   },
         // });
-      } else {
-        result[param.name] = value;
+        // } else {
+        namedResult[param.name] = value;
       }
     }
   });
 
   // Make all error indexed values throw on access
-  for (let i = 0; i < result.length; i++) {
-    const value = result[i];
-    if (value instanceof Error) {
-      // Object.defineProperty(result, i, {
-      //   enumerable: true,
-      //   get: () => {
-      //     throw wrapAccessError(`index ${i}`, value);
-      //   },
-      // });
-    }
-  }
+  // for (let i = 0; i < result.length; i++) {
+  //   const value = result[i];
+  //   if (value instanceof Error) {
+  // Object.defineProperty(result, i, {
+  //   enumerable: true,
+  //   get: () => {
+  //     throw wrapAccessError(`index ${i}`, value);
+  //   },
+  // });
+  //   }
+  // }
 
-  return Object.freeze(result);
+  return namedResult; //Object.freeze(result);
 }
 
 // process.on("SIGINT", (code) => {
