@@ -1,5 +1,7 @@
 from forta_agent import Finding, FindingType, FindingSeverity
 
+from src.utils import get_anomaly_score
+
 
 class SentimentFinding:
     def __init__(self, text_message, sentiment_prediction, emotion_prediction):
@@ -14,6 +16,7 @@ class SentimentFinding:
         self.metadata = {
             "sentiment_score": sentiment_score,
             "emotion_score": emotion_score,
+            "anomaly_score": get_anomaly_score()
         }
 
     def emit_finding(self):
@@ -30,23 +33,23 @@ class SentimentFinding:
 
 
 class NegativeSentimentFinding(SentimentFinding):
-    def __init__(self, sentiment, sentiment_score, emotion, emotion_score):
-        super().__init__(sentiment, sentiment_score, emotion, emotion_score)
+    def __init__(self, text_message, sentiment_prediction, emotion_prediction):
+        super().__init__(text_message, sentiment_prediction, emotion_prediction)
         self.name = "Negative Text Message"
         self.severity = FindingSeverity.High
 
 
 class NeutralSentimentFinding(SentimentFinding):
-    def __init__(self, sentiment, sentiment_score, emotion, emotion_score):
-        super().__init__(sentiment, sentiment_score, emotion, emotion_score)
+    def __init__(self, text_message, sentiment_prediction, emotion_prediction):
+        super().__init__(text_message, sentiment_prediction, emotion_prediction)
         self.name = "Neutral Text Message"
         self.severity = FindingSeverity.Low
         self.type = FindingType.Info
 
 
 class PositiveSentimentFinding(SentimentFinding):
-    def __init__(self, sentiment, sentiment_score, emotion, emotion_score):
-        super().__init__(sentiment, sentiment_score, emotion, emotion_score)
-        self.name = "Neutral Text Message"
+    def __init__(self, text_message, sentiment_prediction, emotion_prediction):
+        super().__init__(text_message, sentiment_prediction, emotion_prediction)
+        self.name = "Positive Text Message"
         self.severity = FindingSeverity.Low
         self.type = FindingType.Info

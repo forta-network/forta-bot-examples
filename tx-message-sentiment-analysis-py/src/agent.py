@@ -1,7 +1,11 @@
+from datetime import datetime
 import forta_agent
 from forta_agent import get_json_rpc_url
 from hexbytes import HexBytes
+import logging
+
 from transformers import pipeline
+
 from web3 import Web3
 
 from src.findings import (
@@ -10,7 +14,14 @@ from src.findings import (
     PositiveSentimentFinding,
 )
 from src.logger import logger
+from src.utils import (
+    update_eoa_text_msg_counter,
+    update_alert_counter,
+)
 
+# Set transformer pkg's logging level to critical to prevent logs raising exceptions in the initialize function.
+logging.getLogger("transformers").setLevel(logging.CRITICAL)
+logging.getLogger("torch").setLevel(logging.CRITICAL)
 
 web3 = Web3(Web3.HTTPProvider(get_json_rpc_url()))
 
@@ -28,12 +39,19 @@ def initialize():
     """
     global SENTIMENT_TASK, EMOTION_TASK
     logger.info("Start loading sentiment model")
-    SENTIMENT_TASK = pipeline(
-        "sentiment-analysis", model=SENTIMENT_MODEL, tokenizer=SENTIMENT_MODEL
-    )
+    try:
+        SENTIMENT_TASK = pipeline(
+            "sentiment-analysis", model=SENTIMENT_MODEL, tokenizer=SENTIMENT_MODEL
+        )
+    except Exception as err:
+        logger.info(f"Error loading sentiment model: {err}")
+
     logger.info("Complete loading sentiment model")
-    logger.info("Complete loading emotion model")
-    EMOTION_TASK = pipeline("emotion-classification", model=EMOTIONS_MODEL)
+    logger.info("Start loading emotion model")
+    try:
+        EMOTION_TASK = pipeline("text-classification", model=EMOTIONS_MODEL)
+    except Exception as err:
+        logger.info(f"Error loading emotion model: {err}")
     logger.info("Complete loading emotion model")
 
 
@@ -47,13 +65,14 @@ def is_eoa(w3: Web3, address: str) -> bool:
     return code == HexBytes("0x")
 
 
-def tx_data_to_text(w3, data):
+def tx_data_to_text(w3, data: str):
     try:
         text = w3.toText(data).strip()
         text_count = text.split(" ")
-        if text_count >= MIN_TOKEN_COUNT:
+        if len(text_count) >= MIN_TOKEN_COUNT:
             return text
-    except:
+    except Exception as err:
+        logger.warning(f"Failed parsing tx data: {err}")
         return None
 
 
@@ -70,13 +89,15 @@ def sentiment_analysis(w3, transaction_event):
 
     from_address = transaction_event.from_
     to_address = transaction_event.to
-    logger.info(from_address, to_address)
     is_eoa_transaction = is_eoa(w3, from_address) and is_eoa(w3, to_address)
 
     # skip if not a transaction between EOAs
     if not is_eoa_transaction:
         return findings
 
+    date_time = datetime.now()
+    date_hour = date_time.strftime("%d/%m/%Y %H:00:00")
+    update_eoa_text_msg_counter(date_hour)
     # empty data
     input_data = transaction_event.transaction.data
     if input_data is None:
@@ -87,16 +108,17 @@ def sentiment_analysis(w3, transaction_event):
     if text_message is None:
         return findings
 
+    update_alert_counter(date_hour)
     sentiment_prediction = get_sentiment(text_message)
     sentiment_label = sentiment_prediction["label"]
     emotion_prediction = get_emotion(text_message)
     finding = None
 
-    if sentiment_label == "Negative":
+    if sentiment_label == "negative":
         finding = NegativeSentimentFinding(
             text_message, sentiment_prediction, emotion_prediction
         )
-    elif sentiment_label == "Positive":
+    elif sentiment_label == "nositive":
         finding = PositiveSentimentFinding(
             text_message, sentiment_prediction, emotion_prediction
         )
@@ -105,7 +127,7 @@ def sentiment_analysis(w3, transaction_event):
             text_message, sentiment_prediction, emotion_prediction
         )
 
-    findings.append(finding)
+    findings.append(finding.emit_finding())
     return findings
 
 

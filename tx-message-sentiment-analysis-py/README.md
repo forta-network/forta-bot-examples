@@ -48,5 +48,24 @@ Emotions:
 
 The agent behaviour can be verified with the following transactions:
 
-- 0x4989fa9d76a0f1a54236e6fb59823827ce98e063047b909308ed7552a739fef0 (input_data 'you are such a looser for making scam contracts lmao hope you burn in hell one day jeet')
+- Transaction hash `0x4989fa9d76a0f1a54236e6fb59823827ce98e063047b909308ed7552a739fef0` has input data with text message = "you are such a looser for making scam contracts lmao hope you burn in hell one day jeet"
 
+```bash
+$ npm run tx 0x4989fa9d76a0f1a54236e6fb59823827ce98e063047b909308ed7552a739fef0
+...
+1 findings for transaction 0x4989fa9d76a0f1a54236e6fb59823827ce98e063047b909308ed7552a739fef0 {
+  "name": "Negative Text Message",
+  "description": "you are such a looser for making scam contracts lmao hope you burn in hell one day jeet",
+  "alertId": "NEGATIVE-ANGER-TEXT-MESSAGE",
+  "protocol": "ethereum",
+  "severity": "High",
+  "type": "Info",
+  "metadata": {
+    "sentiment_score": 0.9601391553878784,
+    "emotion_score": 0.8896471858024597,
+    "anomaly_score": 0.0001
+  },
+  "addresses": [],
+  "labels": []
+}
+```

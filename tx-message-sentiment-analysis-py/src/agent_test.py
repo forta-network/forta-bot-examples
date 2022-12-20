@@ -4,7 +4,7 @@ from agent import handle_transaction
 
 
 class TestSentimentAnalysisBot:
-    def test_returns_empty_findings_if_logs_not_empty(self):
+    def test_returns_empty_findings_if_no_input_data(self):
         tx_event = create_transaction_event(
             {
                 "transaction": {
