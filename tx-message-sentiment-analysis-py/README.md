@@ -36,13 +36,13 @@ Emotions:
   - Fired when a transaction contains a negative text message
   - Severity is always set to "High"
   - Type is always set to "info"
-  - Metadata includes model confidence scores for both sentiment and emotion models.
+  - Metadata includes model confidence scores, response times for both sentiment and emotion models.
 
 - <POSITIVE|NEUTRAL>-<EMOTION>-TEXT-MESSAGE
   - Fired when a transaction contains a positive or neutral text message
   - Severity is always set to "Low"
   - Type is always set to "info"
-  - Metadata includes model confidence scores for both sentiment and emotion models.
+  - Metadata includes model confidence scores, response times for both sentiment and emotion models.
 
 ## Test Data
 
@@ -62,7 +62,9 @@ $ npm run tx 0x4989fa9d76a0f1a54236e6fb59823827ce98e063047b909308ed7552a739fef0
   "type": "Info",
   "metadata": {
     "sentiment_score": 0.9601391553878784,
+    "sentiment_time_secs": 0.29741870800000036,
     "emotion_score": 0.8896471858024597,
+    "emotion_time_secs": 0.06408987499999874,
     "anomaly_score": 0.0001
   },
   "addresses": [],
@@ -92,8 +94,10 @@ initializing agent...
   "type": "Info",
   "metadata": {
     "sentiment_score": 0.6648902893066406,
+    "sentiment_time_secs": 0.11572491699999965,
     "emotion_score": 0.984155535697937,
-    "anomaly_score": 1
+    "emotion_time_secs": 0.06156608299999888,
+    "anomaly_score": 0.0001
   },
   "addresses": [],
   "labels": []
