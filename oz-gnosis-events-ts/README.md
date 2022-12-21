@@ -6,7 +6,7 @@ This agent detects **ALL** events from smart contracts defined in the [`openzepp
 
 ## Supported Chains
 
-- Ethereum Mainnet, Polygon, Avalanche, Arbitrum, Optimism
+- Ethereum, Polygon, Binance Smart Chain, Avalanche, Arbitrum, Optimism, Fantom
 
 ## Alerts
 

@@ -10,12 +10,7 @@ import {
   Log,
   keccak256,
 } from "forta-agent";
-import {
-  getFileContents,
-  getSolidityFiles,
-  parseEventsFromFile,
-} from "./utils";
-import config from "./config.json";
+import { getAllAbis } from "./utils";
 
 let chainId = -1;
 let maxDuration = 0;
@@ -32,7 +27,8 @@ let detailedMetrics: any[] = [];
 let lastPrintTimestamp = Date.now();
 const PRINT_METRICS_FREQUENCY_MS = 5 * 60 * 1000;
 
-let EVENT_TOPIC_TO_FRAGMENT: { [topic: string]: ethers.utils.Fragment[] } = {};
+let EVENT_TOPIC_TO_FRAGMENT: { [topic: string]: ethers.utils.EventFragment[] } =
+  {};
 type InputsMetadata = {
   indexed: Array<ethers.utils.ParamType>;
   nonIndexed: Array<ethers.utils.ParamType>;
@@ -45,53 +41,46 @@ let FRAGMENT_TO_INPUTS_METADATA = new Map<
 let abiCoder = new ethers.utils.AbiCoder();
 
 const initialize: Initialize = async () => {
-  const eventMap: { [signature: string]: string } = {};
+  const eventMap: { [signature: string]: boolean } = {};
   try {
     // chainId = (await getEthersProvider().getNetwork()).chainId;
-    // for each repository specified in config, extract event declarations from smart contracts
-    for (const repository of config.repositories) {
-      const solidityFiles = await getSolidityFiles(repository);
-      const solidityFileContents = await Promise.all(
-        solidityFiles.map((file) => getFileContents(repository, file))
-      );
-      solidityFileContents.forEach((fileContents) => {
-        const events = parseEventsFromFile(fileContents);
-        events.forEach((event) => {
-          // de-dupe events using signature
-          const fragment = ethers.utils.Fragment.from(event);
-          const signature = fragment.format();
-          const sigHash = keccak256(signature);
-          if (!eventMap[signature]) {
-            eventMap[signature] = event;
-            EVENT_TOPIC_TO_FRAGMENT[sigHash] = [fragment];
-            processInputsMetadata(fragment);
-          } else {
-            // handle the case where event signature is same, but its a valid different event (only required for Transfer and Approval events)
-            // i.e. ERC-20 Transfer vs ERC-721 Transfer have same signature but the last argument is indexed only for ERC-721
-            const originalFragment = EVENT_TOPIC_TO_FRAGMENT[sigHash][0];
-            let sameArgsIndexed = true;
-            fragment.inputs.forEach((input, index) => {
-              if (originalFragment.inputs[index].indexed != input.indexed) {
-                sameArgsIndexed = false;
-              }
-            });
-            if (!sameArgsIndexed) {
-              // erc-721 events have all arguments indexed
-              const isErc721Event = fragment.inputs.every(
-                (input) => input.indexed
-              );
-              // keep erc20 fragments at position 0 as perf optimization
-              if (isErc721Event) {
-                EVENT_TOPIC_TO_FRAGMENT[sigHash].push(fragment);
-              } else {
-                EVENT_TOPIC_TO_FRAGMENT[sigHash][0] = fragment;
-                EVENT_TOPIC_TO_FRAGMENT[sigHash][1] = originalFragment;
-              }
-              processInputsMetadata(fragment);
+    const abis = getAllAbis();
+    for (const abi of abis) {
+      const eventSignatureToFragmentMap = abi.events;
+      for (const signature of Object.keys(eventSignatureToFragmentMap)) {
+        // de-dupe events using signature
+        const fragment = eventSignatureToFragmentMap[signature];
+        const topic = keccak256(signature);
+        if (!eventMap[signature]) {
+          eventMap[signature] = true;
+          EVENT_TOPIC_TO_FRAGMENT[topic] = [fragment];
+          processInputsMetadata(fragment);
+        } else {
+          // handle the case where event signature is same, but its a valid different event (only required for Transfer and Approval events)
+          // i.e. ERC-20 Transfer vs ERC-721 Transfer have same signature but the last argument is indexed only for ERC-721
+          const originalFragment = EVENT_TOPIC_TO_FRAGMENT[topic][0];
+          let sameArgsIndexed = true;
+          fragment.inputs.forEach((input, index) => {
+            if (originalFragment.inputs[index].indexed != input.indexed) {
+              sameArgsIndexed = false;
             }
+          });
+          if (!sameArgsIndexed) {
+            // erc-721 events have all arguments indexed
+            const isErc721Event = fragment.inputs.every(
+              (input) => input.indexed
+            );
+            // keep erc20 fragments at position 0 as perf optimization
+            if (isErc721Event) {
+              EVENT_TOPIC_TO_FRAGMENT[topic].push(fragment);
+            } else {
+              EVENT_TOPIC_TO_FRAGMENT[topic][0] = fragment;
+              EVENT_TOPIC_TO_FRAGMENT[topic][1] = originalFragment;
+            }
+            processInputsMetadata(fragment);
           }
-        });
-      });
+        }
+      }
     }
   } catch (e: any) {
     console.log("error during initialization:", e.message);
@@ -118,10 +107,16 @@ const handleTransaction: HandleTransaction = async (
       };
       Object.keys(event.args).forEach((key) => {
         // only add string keys from event.args
-        // if (isNaN(parseInt(key))) {
         metadata[key] = event.args[key].toString();
-        // }
       });
+      // special case where we want to decode event parameter and include it in metadata
+      if (event.name === "SafeMultiSigTransaction") {
+        const data = metadata["additionalInfo"];
+        const nonce = ethers.utils.defaultAbiCoder
+          .decode(["uint256", "address", "uint256"], data)[0]
+          .toString();
+        metadata["nonce"] = nonce;
+      }
       findings.push(
         Finding.fromObject({
           name: `${event.name} Event`,
@@ -229,11 +224,7 @@ function filterLog(logs: Log[]) {
       results.push({
         name: fragment.name,
         address: log.address,
-        args: decodeEventLog(
-          fragment as ethers.utils.EventFragment,
-          log.data,
-          log.topics
-        ),
+        args: decodeEventLog(fragment, log.data, log.topics),
       });
     } catch (e) {
       console.log("error decoding log", e);
@@ -242,7 +233,7 @@ function filterLog(logs: Log[]) {
   return results;
 }
 
-function processInputsMetadata(eventFragment: ethers.utils.Fragment) {
+function processInputsMetadata(eventFragment: ethers.utils.EventFragment) {
   let indexed: Array<ethers.utils.ParamType> = [];
   let nonIndexed: Array<ethers.utils.ParamType> = [];
   let dynamic: Array<boolean> = [];
