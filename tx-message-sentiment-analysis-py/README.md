@@ -69,3 +69,33 @@ $ npm run tx 0x4989fa9d76a0f1a54236e6fb59823827ce98e063047b909308ed7552a739fef0
   "labels": []
 }
 ```
+
+- Transaction hash `0x45144fb8d59debc6665682c649aebb7dcfbb206191835ba57478108c3cd5060a` has input data with text message = "i am poor people. please gift me some money. thanks"
+
+```bash
+$ npm run tx 0x45144fb8d59debc6665682c649aebb7dcfbb206191835ba57478108c3cd5060a
+
+> text-message-sentiment-analysis@1.0.0 tx
+> forta-agent run --tx 0x45144fb8d59debc6665682c649aebb7dcfbb206191835ba57478108c3cd5060a
+
+initializing agent...
+2022-12-21 10:17:33,919 - root - INFO - Start loading sentiment model
+2022-12-21 10:17:40,037 - root - INFO - Complete loading sentiment model
+2022-12-21 10:17:40,037 - root - INFO - Start loading emotion model
+2022-12-21 10:17:51,255 - root - INFO - Complete loading emotion model
+1 findings for transaction 0x45144fb8d59debc6665682c649aebb7dcfbb206191835ba57478108c3cd5060a {
+  "name": "Negative Text Message",
+  "description": "i am poor people. please gift me some money. thanks",
+  "alertId": "NEGATIVE-SADNESS-TEXT-MESSAGE",
+  "protocol": "ethereum",
+  "severity": "High",
+  "type": "Info",
+  "metadata": {
+    "sentiment_score": 0.6648902893066406,
+    "emotion_score": 0.984155535697937,
+    "anomaly_score": 1
+  },
+  "addresses": [],
+  "labels": []
+}
+```
