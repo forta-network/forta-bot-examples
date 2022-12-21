@@ -1,4 +1,9 @@
+from functools import wraps
+import time
+
 from expiring_dict import ExpiringDict
+
+from src.logger import logger
 
 
 GLOBAL_TOTAL_TEXT_MSG_COUNTER = ExpiringDict(ttl=86_400)
@@ -25,3 +30,17 @@ def get_anomaly_score():
     total_alerts = sum(GLOBAL_TOTAL_ALERT_COUNTER.values())
     total_eoa_text_messages = sum(GLOBAL_TOTAL_TEXT_MSG_COUNTER.values())
     return total_alerts / total_eoa_text_messages
+
+
+def timeit(func):
+    @wraps(func)
+    def timeit_wrapper(*args, **kwargs):
+        start_time = time.perf_counter()
+        result = func(*args, **kwargs)
+        end_time = time.perf_counter()
+        total_time = end_time - start_time
+        logger.info(f"Function {func.__name__}{args} Took {total_time:.4f} seconds")
+        result["response_time"] = total_time
+        return result
+
+    return timeit_wrapper

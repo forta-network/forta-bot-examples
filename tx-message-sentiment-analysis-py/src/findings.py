@@ -6,16 +6,16 @@ from src.utils import get_anomaly_score
 class SentimentFinding:
     def __init__(self, text_message, sentiment_prediction, emotion_prediction):
         sentiment = sentiment_prediction["label"]
-        sentiment_score = sentiment_prediction["score"]
         emotion = emotion_prediction["label"]
-        emotion_score = emotion_prediction["score"]
 
         self.alert_id = f"{sentiment.upper()}-{emotion.upper()}-TEXT-MESSAGE"
         self.description = text_message
         self.type = FindingType.Info
         self.metadata = {
-            "sentiment_score": sentiment_score,
-            "emotion_score": emotion_score,
+            "sentiment_score": sentiment_prediction["score"],
+            "sentiment_time_secs": sentiment_prediction["response_time"],
+            "emotion_score": emotion_prediction["score"],
+            "emotion_time_secs": emotion_prediction["response_time"],
             "anomaly_score": get_anomaly_score()
         }
 

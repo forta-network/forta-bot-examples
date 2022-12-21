@@ -14,10 +14,7 @@ from src.findings import (
     PositiveSentimentFinding,
 )
 from src.logger import logger
-from src.utils import (
-    update_eoa_text_msg_counter,
-    update_alert_counter,
-)
+from src.utils import update_eoa_text_msg_counter, update_alert_counter, timeit
 
 # Set transformer pkg's logging level to critical to prevent logs raising exceptions in the initialize function.
 logging.getLogger("transformers").setLevel(logging.CRITICAL)
@@ -76,10 +73,12 @@ def tx_data_to_text(w3, data: str):
         return None
 
 
+@timeit
 def get_sentiment(text_message: str):
     return SENTIMENT_TASK(text_message)[0]
 
 
+@timeit
 def get_emotion(text_message: str):
     return EMOTION_TASK(text_message)[0]
 
