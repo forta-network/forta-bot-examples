@@ -16,10 +16,6 @@ from src.findings import (
 from src.logger import logger
 from src.utils import update_eoa_text_msg_counter, update_alert_counter, timeit
 
-# Set transformer pkg's logging level to critical to prevent logs raising exceptions in the initialize function.
-logging.getLogger("transformers").setLevel(logging.CRITICAL)
-logging.getLogger("torch").setLevel(logging.CRITICAL)
-
 web3 = Web3(Web3.HTTPProvider(get_json_rpc_url()))
 
 SENTIMENT_MODEL = "cardiffnlp/twitter-roberta-base-sentiment-latest"
@@ -43,7 +39,6 @@ def initialize():
     except Exception as err:
         logger.info(f"Error loading sentiment model: {err}")
 
-    logger.info("Complete loading sentiment model")
     logger.info("Start loading emotion model")
     try:
         EMOTION_TASK = pipeline("text-classification", model=EMOTIONS_MODEL)
