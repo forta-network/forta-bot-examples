@@ -68,7 +68,14 @@ $ npm run tx 0x4989fa9d76a0f1a54236e6fb59823827ce98e063047b909308ed7552a739fef0
     "anomaly_score": 0.0001
   },
   "addresses": [],
-  "labels": []
+  "labels": [
+    {
+      "entity": "0x25c2d5a06ff8591d8ed79b5ced26f30581a07e59",
+      "entity_type": 1,
+      "label_type": 9,
+      "confidence": 0.9601391553878784
+    }
+  ]
 }
 ```
 
