@@ -107,18 +107,19 @@ def sentiment_analysis(w3, transaction_event):
     sentiment_label = sentiment_prediction["label"]
     emotion_prediction = get_emotion(text_message)
     finding = None
+    message_receiver = transaction_event.to
 
     if sentiment_label == "negative":
         finding = NegativeSentimentFinding(
-            text_message, sentiment_prediction, emotion_prediction
+            text_message, sentiment_prediction, emotion_prediction, message_receiver
         )
-    elif sentiment_label == "nositive":
+    elif sentiment_label == "positive":
         finding = PositiveSentimentFinding(
-            text_message, sentiment_prediction, emotion_prediction
+            text_message, sentiment_prediction, emotion_prediction, message_receiver
         )
     else:  # Neutral
         finding = NeutralSentimentFinding(
-            text_message, sentiment_prediction, emotion_prediction
+            text_message, sentiment_prediction, emotion_prediction, message_receiver
         )
 
     findings.append(finding.emit_finding())
