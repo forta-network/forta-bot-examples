@@ -6,7 +6,7 @@
     1, 56, 137, 43114, 42161, 10, 250
   ],
   "scripts": {
-    "postinstall": "python3 -m pip install -r requirements_dev.txt",
+    "postinstall": "",
     "start": "npm run start:dev",
     "start:dev": "nodemon --watch src --watch forta.config.json -e py --exec \"forta-agent run\"",
     "start:prod": "forta-agent run --prod",
