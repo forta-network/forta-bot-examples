@@ -1,4 +1,4 @@
-from forta_agent import Finding, FindingType, FindingSeverity, LabelType, EntityType
+from forta_agent import Finding, FindingType, FindingSeverity, EntityType
 
 from src.utils import get_anomaly_score
 
@@ -50,7 +50,7 @@ class NegativeSentimentFinding(SentimentFinding):
             {
                 "entity": msg_receiver,
                 "entity_type": EntityType.Address,
-                "label_type": LabelType.Attacker,
+                "label": "attacker",
                 "confidence": self.metadata["sentiment_score"],
             }
         ]

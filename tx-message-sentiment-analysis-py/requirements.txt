@@ -1,4 +1,4 @@
-forta_agent>=0.1.6
+forta_agent>=0.1.11
 setuptools>=61.3.1
 --extra-index-url https://download.pytorch.org/whl/cpu # Needed to only install cpu-only dependencies and reduce image size
 torch>=1.13.1
