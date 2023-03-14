@@ -5,6 +5,24 @@
   "chainIds": [
     1, 56, 137, 43114, 42161, 10, 250
   ],
+  "chainSettings": {
+    "1": {
+      "shards": 3,
+      "target": 2
+    },
+    "56": {
+      "shards": 3,
+      "target": 2
+    },
+    "137": {
+      "shards": 3,
+      "target": 2
+    },
+    "default": {
+      "shards": 2,
+      "target": 2
+    }
+  },
   "scripts": {
     "postinstall": "",
     "start": "npm run start:dev",
