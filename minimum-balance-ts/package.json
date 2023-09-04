@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "start": "npm run start:dev",
-    "start:dev": "nodemon --watch src --watch forta.config.json -e js,ts,json  --exec 'npm run build && forta-agent run'",
+    "start:dev": "nodemon --watch src --watch forta.config.json -e js,ts,json  --exec \"npm run build && forta-agent run\"",
     "start:prod": "forta-agent run --prod",
     "tx": "npm run build && forta-agent run --tx",
     "block": "npm run build && forta-agent run --block",
