@@ -1,0 +1,40 @@
+{
+  "name": "adding-labels",
+  "version": "0.0.1",
+  "description": "Forta Agent Typescript project that demonstrates labels",
+  "chainIds": [
+    1
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run start:dev",
+    "start:dev": "nodemon --watch src --watch forta.config.json -e js,ts,json  --exec \"npm run build && forta-agent run\"",
+    "start:prod": "forta-agent run --prod",
+    "tx": "npm run build && forta-agent run --tx",
+    "block": "npm run build && forta-agent run --block",
+    "range": "npm run build && forta-agent run --range",
+    "alert": "npm run build && forta-agent run --alert",
+    "sequence": "npm run build && forta-agent run --sequence",
+    "file": "npm run build && forta-agent run --file",
+    "publish": "forta-agent publish",
+    "info": "forta-agent info",
+    "logs": "forta-agent logs",
+    "push": "forta-agent push",
+    "disable": "forta-agent disable",
+    "enable": "forta-agent enable",
+    "keyfile": "forta-agent keyfile",
+    "stake": "forta-agent stake",
+    "test": "jest"
+  },
+  "dependencies": {
+    "forta-agent": "^0.1.40"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.1",
+    "@types/nodemon": "^1.19.0",
+    "jest": "^27.0.6",
+    "nodemon": "^2.0.8",
+    "ts-jest": "^27.0.3",
+    "typescript": "^4.3.4"
+  }
+}
