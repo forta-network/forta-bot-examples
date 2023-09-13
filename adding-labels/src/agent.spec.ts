@@ -6,8 +6,9 @@ import {
   createTransactionEvent,
   ethers,
   EntityType,
+  Label,
 } from "forta-agent";
-import agent from './agent'
+import agent from "./agent";
 import {
   ERC20_TRANSFER_EVENT,
   TETHER_ADDRESS,
@@ -39,16 +40,18 @@ describe("high tether transfer agent", () => {
     it("returns empty findings if there is a Tether transfer below 10,000", async () => {
       const mockTetherTransferEvent = {
         args: {
-          from : "0xabc",
+          from: "0xabc",
           to: "0xdef",
-          value: ethers.BigNumber.from("800000000") // 800 with 6 decimals
-        }
-      }
-      mockTxEvent.filterLog = jest.fn().mockReturnValue([mockTetherTransferEvent])
+          value: ethers.BigNumber.from("800000000"), // 800 with 6 decimals
+        },
+      };
+      mockTxEvent.filterLog = jest
+        .fn()
+        .mockReturnValue([mockTetherTransferEvent]);
 
-      const findings = await handleTransaction(mockTxEvent)
-      expect(findings).toStrictEqual([])
-    })
+      const findings = await handleTransaction(mockTxEvent);
+      expect(findings).toStrictEqual([]);
+    });
 
     it("returns a finding if there is a Tether transfer over 10,000", async () => {
       const mockTetherTransferEvent = {
@@ -79,15 +82,13 @@ describe("high tether transfer agent", () => {
             from: mockTetherTransferEvent.args.from,
           },
           labels: [
-            {
+            Label.fromObject({
               entity: mockTetherTransferEvent.args.from,
               entityType: EntityType.Address,
               label: "attacker",
               confidence: 0.6,
-              metadata: {},
-              remove: false
-            }
-          ]
+            }),
+          ],
         }),
       ]);
       expect(mockTxEvent.filterLog).toHaveBeenCalledTimes(1);

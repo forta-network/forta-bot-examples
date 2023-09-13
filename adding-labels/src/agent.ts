@@ -5,6 +5,7 @@ import {
   FindingSeverity,
   FindingType,
   EntityType,
+  Label,
 } from "forta-agent";
 
 import {
@@ -48,14 +49,12 @@ const handleTransaction: HandleTransaction = async (
             to,
           },
           labels: [
-            {
+            Label.fromObject({
               entity: from,
               entityType: EntityType.Address,
               label: "attacker",
               confidence: 0.6,
-              metadata: {},
-              remove: false,
-            },
+            }),
           ],
         })
       );
