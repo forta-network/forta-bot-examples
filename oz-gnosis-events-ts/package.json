@@ -2,6 +2,7 @@
   "name": "oz-gnosis-events",
   "version": "0.0.1",
   "description": "OpenZeppelin and Gnosis Safe events bot",
+  "repository": "https://github.com/forta-network/forta-bot-examples/tree/master/oz-gnosis-events-ts",
   "chainIds": [
     1,
     137,
@@ -29,7 +30,7 @@
   },
   "dependencies": {
     "axios": "^0.26.1",
-    "forta-agent": "^0.1.8"
+    "forta-agent": "^0.1.38"
   },
   "devDependencies": {
     "@types/jest": "^27.0.1",
