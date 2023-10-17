@@ -1,8 +1,9 @@
 {
   "name": "forta-encryption-example",
+  "displayName": "Forta Encryption Example",
   "version": "0.0.1",
   "description": "Forta bot example that encrypts alerts",
-  "repository": "https://github.com/forta-network/forta-bot-examples",
+  "repository": "https://github.com/forta-network/forta-bot-examples/tree/master/encrypt-alerts-py",
   "chainIds": [
     1
   ],
@@ -28,9 +29,9 @@
     "test": "python3 -m pytest"
   },
   "dependencies": {
-    "forta-agent": "^0.1.32"
+    "forta-agent": "^0.1.42"
   },
   "devDependencies": {
-    "nodemon": "^2.0.8"
+    "nodemon": "^3.0.1"
   }
 }
