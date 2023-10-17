@@ -1,7 +1,12 @@
 {
   "name": "blacklisted-address-agent",
+  "displayName": "Blacklisted Address Agent",
   "version": "0.0.1",
   "description": "Forta Agent that reports transactions involving blacklisted addresses",
+  "repository": "https://github.com/forta-network/forta-bot-examples/tree/master/blacklisted-address-ts",
+  "chainIds": [
+    1
+  ],
   "scripts": {
     "build": "tsc",
     "start": "npm run start:dev",
@@ -19,7 +24,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "forta-agent": "^0.1.1"
+    "forta-agent": "^0.1.42"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
