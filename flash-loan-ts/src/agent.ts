@@ -1,23 +1,24 @@
-import BigNumber from 'bignumber.js'
-import { 
-  Finding, 
-  HandleTransaction, 
-  TransactionEvent, 
-  FindingSeverity, 
+import BigNumber from "bignumber.js";
+import {
+  Finding,
+  HandleTransaction,
+  TransactionEvent,
+  FindingSeverity,
   FindingType,
   getEthersProvider,
   ethers,
   getTransactionReceipt,
-  Receipt
-} from 'forta-agent'
+  Receipt,
+} from "forta-agent";
 
-const HIGH_GAS_THRESHOLD = "7000000"
-const AAVE_V2_ADDRESS = "0x7d2768de32b0b80b7a3454c06bdac94a69ddc7a9"
-const FLASH_LOAN_EVENT = "event FlashLoan(address indexed target, address indexed initiator, address indexed asset, uint256 amount, uint256 premium, uint16 referralCode)"
-const INTERESTING_PROTOCOLS = ["0xacd43e627e64355f1861cec6d3a6688b31a6f952"]// Yearn Dai vault
-const BALANCE_DIFF_THRESHOLD = "200000000000000000000"// 200 eth
+const HIGH_GAS_THRESHOLD = "7000000";
+const AAVE_V2_ADDRESS = "0x7d2768de32b0b80b7a3454c06bdac94a69ddc7a9";
+const FLASH_LOAN_EVENT =
+  "event FlashLoan(address indexed target, address indexed initiator, address indexed asset, uint256 amount, uint256 premium, uint16 referralCode)";
+const INTERESTING_PROTOCOLS = ["0xacd43e627e64355f1861cec6d3a6688b31a6f952"]; // Yearn Dai vault
+const BALANCE_DIFF_THRESHOLD = new BigNumber("2000000000000000000"); // 2 eth
 
-const ethersProvider = getEthersProvider()
+const ethersProvider = getEthersProvider();
 
 function provideHandleTransaction(
   ethersProvider: ethers.providers.JsonRpcProvider,
@@ -25,30 +26,37 @@ function provideHandleTransaction(
 ): HandleTransaction {
   return async function handleTransaction(txEvent: TransactionEvent) {
     // report finding if detected a flash loan attack on Yearn Dai vault
-    const findings: Finding[] = []
-  
+    const findings: Finding[] = [];
+
     // if aave not involved
-    if (!txEvent.addresses[AAVE_V2_ADDRESS]) return findings
-  
+    if (!txEvent.addresses[AAVE_V2_ADDRESS]) return findings;
+
     // if no flash loan events found
-    const flashLoanEvents = txEvent.filterLog(FLASH_LOAN_EVENT)
-    if (!flashLoanEvents.length) return findings
-  
+    const flashLoanEvents = txEvent.filterLog(FLASH_LOAN_EVENT);
+    if (!flashLoanEvents.length) return findings;
+
     // if does not involve a protocol we are interested in
-    const protocolAddress = INTERESTING_PROTOCOLS.find((address) => txEvent.addresses[address])
-    if (!protocolAddress) return findings
+    const protocolAddress = INTERESTING_PROTOCOLS.find(
+      address => txEvent.addresses[address]
+    );
+    if (!protocolAddress) return findings;
 
     // if gas too low
-    const  { gasUsed } = await getTransactionReceipt(txEvent.hash)
-    if (new BigNumber(gasUsed).isLessThan(HIGH_GAS_THRESHOLD)) return findings
-  
+    const { gasUsed } = await getTransactionReceipt(txEvent.hash);
+    if (new BigNumber(gasUsed).isLessThan(HIGH_GAS_THRESHOLD)) return findings;
+
     // if balance of affected contract address has not changed by threshold
-    const blockNumber = txEvent.blockNumber
-    const currentBalance = new BigNumber((await ethersProvider.getBalance(protocolAddress, blockNumber)).toString())
-    const previousBalance = new BigNumber((await ethersProvider.getBalance(protocolAddress, blockNumber-1)).toString())
-    const balanceDiff = previousBalance.minus(currentBalance)
-    if (balanceDiff.isLessThan(BALANCE_DIFF_THRESHOLD)) return findings
-  
+    const blockNumber = txEvent.blockNumber;
+    const currentBalance = new BigNumber(
+      (await ethersProvider.getBalance(txEvent.from, blockNumber)).toString()
+    );
+    const previousBalance = new BigNumber(
+      (await ethersProvider.getBalance(txEvent.from, blockNumber - 1)).toString()
+    );
+    const balanceDiff = currentBalance.minus(previousBalance);
+
+    if (balanceDiff.lt(BALANCE_DIFF_THRESHOLD)) return findings;
+
     findings.push(
       Finding.fromObject({
         name: "Flash Loan with Loss",
@@ -60,15 +68,15 @@ function provideHandleTransaction(
         metadata: {
           protocolAddress,
           balanceDiff: balanceDiff.toString(),
-          loans: JSON.stringify(flashLoanEvents)
+          loans: JSON.stringify(flashLoanEvents),
         },
-      }
-    ))
-    return findings
-  }
+      })
+    );
+    return findings;
+  };
 }
 
 export default {
   provideHandleTransaction,
-  handleTransaction: provideHandleTransaction(ethersProvider, getTransactionReceipt)
-}
+  handleTransaction: provideHandleTransaction(ethersProvider, getTransactionReceipt),
+};

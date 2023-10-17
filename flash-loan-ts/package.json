@@ -1,7 +1,12 @@
 {
   "name": "flash-loan-agent",
+  "displayName": "Flash Loan Agent",
   "version": "0.0.1",
   "description": "Forta Agent that detects flash loan attacks",
+  "repository": "https://github.com/forta-network/forta-bot-examples/tree/master/flash-loan-ts",
+  "chainIds": [
+    1
+  ],
   "scripts": {
     "build": "tsc",
     "start": "npm run start:dev",
@@ -20,13 +25,11 @@
   },
   "dependencies": {
     "bignumber.js": "^9.0.1",
-    "forta-agent": "^0.1.1"
+    "forta-agent": "^0.1.42"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.23",
-    "@types/nodemon": "^1.19.0",
     "jest": "^27.0.6",
-    "nodemon": "^2.0.8",
+    "nodemon": "^3.0.1",
     "ts-jest": "^27.0.3",
     "typescript": "^4.3.4"
   }
