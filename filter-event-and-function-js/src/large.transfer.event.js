@@ -1,10 +1,6 @@
 const BigNumber = require("bignumber.js");
 const { Finding, FindingSeverity, FindingType } = require("forta-agent");
-const {
-  USDT_ADDRESS,
-  USDT_DECIMALS,
-  ERC20_TRANSFER_EVENT,
-} = require("./constants");
+const { USDT_ADDRESS, USDT_DECIMALS, ERC20_TRANSFER_EVENT } = require("./constants");
 
 const AMOUNT_THRESHOLD = "1000000"; // 1 million
 
@@ -13,19 +9,16 @@ function provideHandleTransaction(amountThreshold) {
     const findings = [];
 
     // filter the transaction logs for USDT Transfer events
-    const usdtTransferEvents = txEvent.filterLog(
-      ERC20_TRANSFER_EVENT,
-      USDT_ADDRESS
-    );
+    const usdtTransferEvents = txEvent.filterLog(ERC20_TRANSFER_EVENT, USDT_ADDRESS);
 
     // fire alerts for transfers of large amounts
-    usdtTransferEvents.forEach((usdtTransfer) => {
+    usdtTransferEvents.forEach(usdtTransfer => {
       // shift decimal places of transfer amount
-      const amount = new BigNumber(
-        usdtTransfer.args.value.toString()
-      ).dividedBy(10 ** USDT_DECIMALS);
+      const amount = new BigNumber(usdtTransfer.args.value.toString()).dividedBy(
+        10 ** USDT_DECIMALS
+      );
 
-      if (amount.isLessThan(amountThreshold)) return;
+      if (amount.lt(amountThreshold)) return;
 
       const formattedAmount = amount.toFixed(2);
       findings.push(
