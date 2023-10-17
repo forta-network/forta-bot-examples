@@ -1,4 +1,4 @@
-const ganache = require("ganache-core");
+const ganache = require("ganache");
 const {
   Finding,
   FindingSeverity,

@@ -1,5 +1,5 @@
 const { ethers } = require("forta-agent");
-const ganache = require("ganache-core");
+const ganache = require("ganache");
 const { USER } = require("./src/constants");
 
 const RPC_URL = "https://mainnet.infura.io/v3/YOUR_API_KEY";

@@ -1,7 +1,19 @@
 {
   "name": "advanced-testing-agent",
+  "displayName": "Advanced Testing Agent",
   "version": "0.0.1",
   "description": "Forta Agent Javascript project that demonstrates advanced testing",
+  "repository": "https://github.com/forta-network/forta-bot-examples/tree/master/advanced-testing-js",
+  "chainIds": [
+    1,
+    56,
+    1337,
+    10,
+    137,
+    42161,
+    250,
+    43114
+  ],
   "scripts": {
     "start": "npm run start:dev",
     "start:dev": "nodemon --watch src --watch forta.config.json -e js,json --exec \"forta-agent run\"",
@@ -20,11 +32,11 @@
     "simulation": "node run.simulated.transactions.js"
   },
   "dependencies": {
-    "forta-agent": "^0.1.1"
+    "forta-agent": "^0.1.42"
   },
   "devDependencies": {
+    "ganache": "^7.9.1",
     "jest": "^27.0.6",
-    "nodemon": "^2.0.8",
-    "ganache-core": "^2.13.2"
+    "nodemon": "^2.0.8"
   }
 }
