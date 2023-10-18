@@ -37,6 +37,6 @@
   "devDependencies": {
     "ganache": "^7.9.1",
     "jest": "^27.0.6",
-    "nodemon": "^2.0.8"
+    "nodemon": "^3.0.1"
   }
 }
