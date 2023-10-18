@@ -1,7 +1,12 @@
 {
   "name": "private-agent",
+  "displayName": "Private Agent",
   "version": "0.0.1",
   "description": "Forta Agent in Javascript that emits private findings",
+  "repository": "https://github.com/forta-network/forta-bot-examples/tree/master/minimum-balance-py",
+  "chainIds": [
+    1
+  ],
   "scripts": {
     "start": "npm run start:dev",
     "start:dev": "nodemon --watch src --watch forta.config.json -e js,json --exec \"forta-agent run\"",
@@ -20,12 +25,12 @@
   },
   "dependencies": {
     "bignumber.js": "^9.0.1",
-    "forta-agent": "^0.1.1",
+    "forta-agent": "^0.1.42",
     "openpgp": "^5.0.1"
   },
   "devDependencies": {
     "jest": "^27.0.6",
-    "nodemon": "^2.0.8",
-    "javascript-obfuscator": "^3.0.0"
+    "nodemon": "^3.0.1",
+    "javascript-obfuscator": "^4.1.0"
   }
 }
