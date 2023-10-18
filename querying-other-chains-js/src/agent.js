@@ -1,39 +1,33 @@
-const {
-  Finding,
-  FindingSeverity,
-  FindingType,
-  ethers,
-} = require("forta-agent");
+const { Finding, FindingSeverity, FindingType, ethers } = require("forta-agent");
 
 let findingsCache = [];
-let isScanningRinkeby = false;
-let currentRinkebyBlockNumber = -1;
-const RINKEBY_RPC_URL = "https://rinkeby.infura.io/v3/YOUR_API_KEY";
-const rinkebyProvider = new ethers.providers.JsonRpcProvider(RINKEBY_RPC_URL);
+let isScanningGoerli = false;
+let currentGoerliBlockNumber = -1;
+const GOERLI_RPC_URL =
+  "https://eth-goerli.alchemyapi.io/v2/NMpJ40wos2fBOzy5hhJzXHT3SL887lRw";
+const goerliProvider = new ethers.providers.JsonRpcProvider(GOERLI_RPC_URL);
 
 async function initialize() {
-  currentRinkebyBlockNumber = await rinkebyProvider.getBlockNumber();
+  currentGoerliBlockNumber = await goerliProvider.getBlockNumber();
 }
 
-async function scanRinkebyBlocks() {
-  isScanningRinkeby = true;
+async function scanGoerliBlocks() {
+  isScanningGoerli = true;
 
-  const latestRinkebyBlockNumber = await rinkebyProvider.getBlockNumber();
-  while (currentRinkebyBlockNumber <= latestRinkebyBlockNumber) {
-    // fetch rinkeby block
-    const rinkebyBlock = await rinkebyProvider.getBlock(
-      currentRinkebyBlockNumber
-    );
+  const latestGoerliBlockNumber = await goerliProvider.getBlockNumber();
+  while (currentGoerliBlockNumber <= latestGoerliBlockNumber) {
+    // fetch goerli block
+    const goerliBlock = await goerliProvider.getBlock(currentGoerliBlockNumber);
     // fetch receipt for each transaction in block
-    for (const tx of rinkebyBlock.transactions) {
-      const receipt = await rinkebyProvider.getTransactionReceipt(tx);
+    for (const tx of goerliBlock.transactions) {
+      const receipt = await goerliProvider.getTransactionReceipt(tx);
 
       if (receipt.gasUsed.gt("1000000")) {
         findingsCache.push(
           Finding.fromObject({
             name: "High gas used",
             description: `Transaction with high gas usage: ${receipt.gasUsed.toString()}`,
-            alertId: "RINK-1",
+            alertId: "GOERLI-1",
             severity: FindingSeverity.Info,
             type: FindingType.Info,
             metadata: {
@@ -44,10 +38,10 @@ async function scanRinkebyBlocks() {
         );
       }
     }
-    currentRinkebyBlockNumber++;
+    currentGoerliBlockNumber++;
   }
 
-  isScanningRinkeby = false;
+  isScanningGoerli = false;
 }
 
 async function handleBlock(blockEvent) {
@@ -60,8 +54,8 @@ async function handleBlock(blockEvent) {
   }
 
   // make sure only one task is running at a time
-  if (!isScanningRinkeby) {
-    scanRinkebyBlocks();
+  if (!isScanningGoerli) {
+    scanGoerliBlocks();
   }
 
   return findings;
