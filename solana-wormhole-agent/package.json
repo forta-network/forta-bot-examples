@@ -1,7 +1,12 @@
 {
   "name": "solana-wormhole-monitor",
+  "displayName": "Solana Wormhole Monitor",
   "version": "0.0.1",
   "description": "Forta Agent Javascript example that monitors the Wormhole bridge on Solana",
+  "repository": "https://github.com/forta-network/forta-bot-examples/tree/master/solana-wormhole-agent",
+  "chainIds": [
+    1
+  ],
   "scripts": {
     "start": "npm run start:dev",
     "start:dev": "nodemon --watch src --watch forta.config.json -e js,json --exec \"forta-agent run\"",
@@ -18,11 +23,11 @@
     "test": "jest"
   },
   "dependencies": {
-    "forta-agent": "^0.1.1",
+    "forta-agent": "^0.1.42",
     "@solana/web3.js": "^1.32.1"
   },
   "devDependencies": {
     "jest": "^27.0.6",
-    "nodemon": "^2.0.8"
+    "nodemon": "^3.0.1"
   }
 }
