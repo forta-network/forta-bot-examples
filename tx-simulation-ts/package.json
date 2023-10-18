@@ -1,7 +1,12 @@
 {
-  "name": "forta-agent-starter",
+  "name": "tx-simulator",
+  "displayName": "Tx Simulator",
   "version": "0.0.1",
-  "description": "Forta Agent Typescript starter project",
+  "description": "Forta Agent that simulates transactions using a Ganache fork.",
+  "repository": "https://github.com/forta-network/forta-bot-examples/tree/master/tx-simulation-ts",
+  "chainIds": [
+    1
+  ],
   "scripts": {
     "build": "tsc",
     "start": "npm run start:dev",
@@ -19,7 +24,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "forta-agent": "^0.1.1",
+    "forta-agent": "^0.1.42",
     "ganache-core": "^2.13.2"
   },
   "devDependencies": {
@@ -27,7 +32,7 @@
     "@types/jest": "^27.0.1",
     "@types/nodemon": "^1.19.0",
     "jest": "^27.0.6",
-    "nodemon": "^2.0.8",
+    "nodemon": "^3.0.1",
     "ts-jest": "^27.0.3",
     "typescript": "^4.3.4"
   }
