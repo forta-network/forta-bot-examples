@@ -1,5 +1,6 @@
 {
   "name": "oz-gnosis-events",
+  "displayName": "OpenZeppelin Gnosis Events",
   "version": "0.0.1",
   "description": "OpenZeppelin and Gnosis Safe events bot",
   "repository": "https://github.com/forta-network/forta-bot-examples/tree/master/oz-gnosis-events-ts",
@@ -30,13 +31,13 @@
   },
   "dependencies": {
     "axios": "^0.26.1",
-    "forta-agent": "^0.1.38"
+    "forta-agent": "^0.1.42"
   },
   "devDependencies": {
     "@types/jest": "^27.0.1",
     "@types/nodemon": "^1.19.0",
     "jest": "^27.0.6",
-    "nodemon": "^2.0.8",
+    "nodemon": "^3.0.1",
     "ts-jest": "^27.0.3",
     "typescript": "^4.3.4"
   }
