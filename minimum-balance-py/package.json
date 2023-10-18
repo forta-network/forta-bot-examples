@@ -1,7 +1,12 @@
 {
   "name": "minimum-balance-agent",
+  "displayName": "Minimum Balance Agent",
   "version": "0.0.1",
   "description": "Forta Agent in Python that detects if an account balance falls below some threshold",
+  "repository": "https://github.com/forta-network/forta-bot-examples/tree/master/minimum-balance-py",
+  "chainIds": [
+    1
+  ],
   "scripts": {
     "postinstall": "python3 -m pip install -r requirements_dev.txt",
     "start": "npm run start:dev",
@@ -19,9 +24,9 @@
     "test": "python3 -m pytest"
   },
   "dependencies": {
-    "forta-agent": "^0.1.1"
+    "forta-agent": "^0.1.42"
   },
   "devDependencies": {
-    "nodemon": "^2.0.8"
+    "nodemon": "^3.0.1"
   }
 }
